@@ -1,0 +1,25 @@
+.view {
+    background: linear-gradient(135deg, #6a0572, #00c6ff);
+    font-family: Arial, sans-serif;
+    background-size: 200% 135%;
+    animation: gradientBG 10s ease infinite;
+    height: 100%;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.label-font {
+    font-size: 14px;
+}
