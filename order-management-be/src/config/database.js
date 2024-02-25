@@ -16,6 +16,7 @@ const config = {
     username: env.db.user,
     password: env.db.password,
 }
+export const db = {};
 
 const createDatabase = async () => {
     try {
@@ -36,7 +37,6 @@ const createDatabase = async () => {
 
 // Define all database models
 const defineModels = (sequelize) => {
-    const db = {};
     db.Sequelize = Sequelize;
     db.owners = ownerModel(sequelize, DataTypes);
     db.customers = customerModel(sequelize, DataTypes);
@@ -46,7 +46,7 @@ const defineModels = (sequelize) => {
     db.orders = orderModel(sequelize, DataTypes);
     db.payments = paymentModel(sequelize, DataTypes);
     db.notifications = notificationModel(sequelize, DataTypes);
-    return db;
+    return;
 };
 
 const initDb = async () => {
@@ -55,7 +55,7 @@ const initDb = async () => {
         const sequelize = await createDatabase();
 
         // Define and associate models
-        const db = defineModels(sequelize);
+        defineModels(sequelize);
 
         // Sync models with database
         await sequelize.sync({ force: false });
