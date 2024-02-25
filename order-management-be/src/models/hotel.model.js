@@ -1,5 +1,5 @@
-const hotelModel = (sequelize, DataTypes) => {
-    const Hotel = sequelize.define("hotel", {
+const hotelModel = (sequelize, DataTypes) => (
+    sequelize.define("hotel", {
         id: {
             type: DataTypes.STRING,
             primaryKey: true
@@ -45,9 +45,7 @@ const hotelModel = (sequelize, DataTypes) => {
                 key: 'id'
             }
         }
-    });
-
-    return Hotel;
-}
+    })
+)
 
 export default hotelModel;

@@ -1,36 +1,34 @@
-const tableModel = (sequelize, DataTypes) => {
-    const table = sequelize.define('table',{
-        id:{
+const paymentModel = (sequelize, DataTypes) => (
+    sequelize.define("payment", {
+        id: {
             type: DataTypes.STRING,
             primaryKey: true
         },
-        number:{
-            type: DataTypes.INTEGER,
+        amount: {
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        qrDetails:{
+        status: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        status:{
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true
+        paymentDetails:{
+            type: DataTypes.JSON,
+            allowNull: false
         },
-        deletedAt:{
+        deletedAt: {
             type: DataTypes.DATE,
             allowNull: true
         },
-        hotelId:{
+        orderId: {
             type: DataTypes.STRING,
             allowNull: false,
             references: {
-                model: 'hotels',
+                model: 'orders',
                 key: 'id'
             }
         }
-    });
-    return table;
-}
+    })
+)
 
-export default tableModel;
+export default paymentModel;

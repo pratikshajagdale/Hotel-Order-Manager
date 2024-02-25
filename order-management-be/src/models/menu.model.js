@@ -1,5 +1,5 @@
-const menuModel = (sequelize, DataTypes) =>{
-    const Menu = sequelize.define('menu',{
+const menuModel = (sequelize, DataTypes) => (
+    sequelize.define('menu',{
         id:{
             type: DataTypes.STRING,
             primaryKey: true
@@ -36,8 +36,7 @@ const menuModel = (sequelize, DataTypes) =>{
                 key: 'id'
             }
         }
-    });
-    return Menu;
-}
+    })
+)
 
 export default menuModel;
