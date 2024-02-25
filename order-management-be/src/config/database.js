@@ -1,12 +1,12 @@
 import { Sequelize, DataTypes } from "sequelize";
-import ownerModel from "../models/owner.model.js";
-import customerModel from "../models/customer.model.js";
-import hotelModel from "../models/hotel.model.js";
-import menuModel from "../models/menu.model.js";
-import tableModel from "../models/table.model.js";
-import orderModel from "../models/order.model.js";
-import paymentModel from "../models/payment.model.js";
-import notificationModel from "../models/notification.model.js";
+import ownerModel from "../api/models/owner.model.js";
+import customerModel from "../api/models/customer.model.js";
+import hotelModel from "../api/models/hotel.model.js";
+import menuModel from "../api/models/menu.model.js";
+import tableModel from "../api/models/table.model.js";
+import orderModel from "../api/models/order.model.js";
+import paymentModel from "../api/models/payment.model.js";
+import notificationModel from "../api/models/notification.model.js";
 import env from "./vars.js";
 
 const config = {
