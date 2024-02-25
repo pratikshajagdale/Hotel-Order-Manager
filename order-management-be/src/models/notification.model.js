@@ -1,35 +1,35 @@
-const paymentModel = (sequelize, DataTypes) => {
-    const payment = sequelize.define("payment", {
+const notificationModel = (sequelize, DataTypes) => (
+    sequelize.define("notification", {
         id: {
             type: DataTypes.STRING,
             primaryKey: true
         },
-        amount: {
-            type: DataTypes.DECIMAL(10, 2),
+        fcmToken: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        
+        message: {
+            type: DataTypes.STRING,
             allowNull: false
         },
         status: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        paymentDetails:{
-            type: DataTypes.JSON,
-            allowNull: false
+            allowNull: true
         },
         deletedAt: {
             type: DataTypes.DATE,
             allowNull: true
         },
-        orderId: {
+        customerId: {
             type: DataTypes.STRING,
             allowNull: false,
             references: {
-                model: 'orders',
+                model: 'customers',
                 key: 'id'
             }
         }
-    });
-    return payment;
-}
+    })
+)
 
-export default paymentModel;
+export default notificationModel;

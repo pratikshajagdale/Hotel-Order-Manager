@@ -1,6 +1,5 @@
-const ownerModel = (sequelize, DataTypes) => {
-
-    const Owner = sequelize.define("owner", {
+const ownerModel = (sequelize, DataTypes) => (
+    sequelize.define("owner", {
         id: {
             type: DataTypes.STRING,
             primaryKey: true
@@ -33,10 +32,7 @@ const ownerModel = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true
         }
-        
-    });
-
-    return Owner;
-}
+    })
+)
 
 export default ownerModel;

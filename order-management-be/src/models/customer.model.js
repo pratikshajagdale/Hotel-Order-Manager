@@ -1,5 +1,5 @@
-const customerModel = (sequelize, DataTypes) => {
-    const customer = sequelize.define("customer", {
+const customerModel = (sequelize, DataTypes) => (
+    sequelize.define("customer", {
         id: {
             type: DataTypes.STRING,
             primaryKey: true
@@ -20,9 +20,7 @@ const customerModel = (sequelize, DataTypes) => {
                 key: 'id'
             }
         }
-    });
-
-    return customer;
-}
+    })
+)
 
 export default customerModel;

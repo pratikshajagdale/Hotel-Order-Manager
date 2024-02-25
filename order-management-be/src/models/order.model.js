@@ -1,28 +1,31 @@
-const notificationModel = (sequelize, DataTypes) => {
-
-    const notification = sequelize.define("notification", {
-        id: {
+const orderModel = (sequelize, DataTypes) => (
+    sequelize.define('order',{
+        id:{
             type: DataTypes.STRING,
             primaryKey: true
         },
-        fcmToken: {
-            type: DataTypes.STRING,
+        orderDetails:{
+            type: DataTypes.JSON,   
             allowNull: false
         },
-        
-        message: {
-            type: DataTypes.STRING,
+        totalPrice:{
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        status: {
+        status:{
             type: DataTypes.STRING,
             allowNull: true
         },
-        deletedAt: {
+        rating: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        deletedAt:{
             type: DataTypes.DATE,
             allowNull: true
         },
-        customerId: {
+
+        customerId:{
             type: DataTypes.STRING,
             allowNull: false,
             references: {
@@ -30,8 +33,7 @@ const notificationModel = (sequelize, DataTypes) => {
                 key: 'id'
             }
         }
-    });
-    return notification;
-}
+    })
+)
 
-export default notificationModel;
+export default orderModel;
