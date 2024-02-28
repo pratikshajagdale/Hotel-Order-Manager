@@ -14,10 +14,13 @@ export default {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     dialect: process.env.DB_DIALECT
+  },
+  email :{
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIl_PASS
   }
 };
-
-
-
-
-
