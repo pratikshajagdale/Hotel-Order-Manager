@@ -1,6 +1,6 @@
 import initDb from "./config/database.js";
 import app from "./config/express.js";
-import env from "./config/vars.js";
+import env from "./config/env.js";
 
 const startServer = async () => {
     try {

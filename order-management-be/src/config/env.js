@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export default {
+const env = {
   app: {
     env: process.env.NODE_ENV,
-    port: Number(process.env.PORT),  
+    port: Number(process.env.PORT),
+    appUrl: process.env.APP_URL
   },
   jwtSecret: process.env.JWT_SECRET,
   db: {
@@ -21,6 +22,9 @@ export default {
     port: 465,
     secure: true,
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIl_PASS
-  }
+    pass: process.env.EMAIL_PASS
+  },
+  cryptoSecret: process.env.CRYPTO_SECRET_KEY
 };
+
+export default env;

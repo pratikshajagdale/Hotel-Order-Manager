@@ -7,7 +7,7 @@ import tableModel from "../api/models/table.model.js";
 import orderModel from "../api/models/order.model.js";
 import paymentModel from "../api/models/payment.model.js";
 import notificationModel from "../api/models/notification.model.js";
-import env from "./vars.js";
+import env from "./env.js";
 
 const config = {
     host: env.db.host,

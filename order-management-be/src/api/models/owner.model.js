@@ -4,7 +4,8 @@ const ownerModel = (sequelize, DataTypes) => (
     sequelize.define("owner", {
         id: {
             type: DataTypes.STRING,
-            primaryKey: true
+            primaryKey: true,
+            unique: true
         },
         firstName: {
             type: DataTypes.STRING,
@@ -16,11 +17,13 @@ const ownerModel = (sequelize, DataTypes) => (
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
-        phone: {
+        phoneNumber: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         password: {
             type: DataTypes.STRING,
@@ -28,7 +31,7 @@ const ownerModel = (sequelize, DataTypes) => (
         },
         addressLine1: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         addressLine2: {
             type: DataTypes.TEXT,
@@ -36,19 +39,15 @@ const ownerModel = (sequelize, DataTypes) => (
         },
         city: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         state: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         zipCode: {
             type: DataTypes.TEXT,
-            allowNull: true
-        },
-        gender: {
-            type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM,
