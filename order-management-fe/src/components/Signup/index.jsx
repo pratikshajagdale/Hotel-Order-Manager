@@ -1,187 +1,158 @@
-import React, { useState } from 'react';
-import { Container, Form, Button, Col, Row } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
-import "../../styles/login.css"
+import React from 'react';
+import { Container, Button, Col, Row, FormGroup, FormLabel, Card, CardBody } from 'react-bootstrap';
+import { ErrorMessage, Field, Formik, Form } from 'formik';
+import CryptoJS from "crypto-js";
+import { ownerRegisterationSchema } from '../../validations/signup';
+import env from '../../config/env';
+import { registerOwner } from '../../services/owner.service';
+import '../../styles/login.css'
 
 function Signup() {
-  const [formData, setFormData] = useState({
+  const initialValues = {
     firstName: '',
     lastName: '',
-    userAddress: '',
-    userPhoneNumber: '',
-    hotelName: '',
-    hotelAddress: '',
-    hotelPhoneNumber: '',
-    userType: 'user',
-  });
+    phoneNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    zipCode: '',
+  };
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const navigate = useNavigate();
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true);
+
+    const enpass = CryptoJS.AES.encrypt(values.password, env.secretKey).toString();
+    const payload = { ...values, password: enpass };
+    delete payload.confirmPassword;
+
+    await registerOwner(payload).then((res) => {
+      setSubmitting(false);
+      console.log(res);
+      console.log("Success");
+    }).catch((err) => {
+      setSubmitting(false);
+      console.log(err);
+      console.log("Failed");
     });
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log(formData);
-  // };
-
-  const handleOnClickLogin = (e) => {
-    e.preventDefault();
-    navigate("/")
-  };
-
-  const handleStepOneSubmit = (e) => {
-    e.preventDefault();
-    setCurrentStep(2);
-  };
-
-  const handleStepTwoSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  const stepTwoForm = (
-    <Form onSubmit={handleStepTwoSubmit} className="d-flex flex-column">
-      <Form.Group className="my-2" controlId="hotelName">
-        <Form.Label className="label-font">Hotel Name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter hotel name"
-          name="hotelName"
-          value={formData.hotelName}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group className="my-2" controlId="hotelAddress">
-        <Form.Label className="label-font">Hotel Address</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter hotel address"
-          name="hotelAddress"
-          value={formData.hotelAddress}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group className="my-2" controlId="hotelPhoneNumber">
-        <Form.Label className="label-font">Hotel Phone Number</Form.Label>
-        <Form.Control
-          type="tel"
-          placeholder="Enter hotel phone number"
-          name="hotelPhoneNumber"
-          value={formData.hotelPhoneNumber}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group className="my-2" controlId="userType">
-        <Form.Label className="label-font">User Type</Form.Label>
-        <div>
-          <Form.Check
-            inline
-            type="radio"
-            label="Admin"
-            name="userType"
-            id="admin"
-            value="admin"
-
-            checked={formData.userType !== "owner"}
-            onChange={handleChange}
-          />
-          <Form.Check
-            inline
-            type="radio"
-            label="Owner"
-            name="userType"
-            id="owner"
-            value="owner"
-            checked={formData.userType === "owner"}
-            onChange={handleChange}
-          />
-        </div>
-      </Form.Group>
-
-      <Button variant="primary" type="submit" className="mt-3 mx-auto">
-        Submit
-      </Button>
-    </Form>
-  );
-
-  const stepOneForm = (
-    <Form onSubmit={handleStepOneSubmit} className="d-flex flex-column">
-        <Form.Group className="my-2" controlId="firstName">
-          <Form.Label className="label-font">First Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your first name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="lastName">
-          <Form.Label className="label-font">Last Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your last name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-
-      <Form.Group className="my-2" controlId="userAddress">
-        <Form.Label className="label-font">User Address</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter your address"
-          name="userAddress"
-          value={formData.userAddress}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group className="my-2" controlId="userPhoneNumber">
-        <Form.Label className="label-font">User Phone Number</Form.Label>
-        <Form.Control
-          type="tel"
-          placeholder="Enter your phone number"
-          name="userPhoneNumber"
-          value={formData.userPhoneNumber}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit" className="mt-3 mx-auto">
-        Next
-      </Button>
-    </Form>
-  );
-
   return (
-    <Row className="view d-flex align-items-center m-0">
-      <Col className="col-12 col-md-4 m-auto">
-        <Container className="bg-white shadow-lg p-5">
-          <h1 className="text-center mb-4 fw-bold">Signup</h1>
-          {currentStep === 1 ? stepOneForm : stepTwoForm}
-          <div className="mt-4 text-center">
-            <p className="label-font m-0">Already have an account? <span role="button" className="text-primary" onClick={handleOnClickLogin}>Login</span></p>
-          </div>
-        </Container>
-      </Col>
-    </Row>
+    <div className='view d-flex align-items-center m-0'>
+      <Container className='d-flex justify-content-center'>
+        <Card className='rounded-0 shadow-lg mx-5 col-6'>
+          <CardBody className='m-4 d-flex flex-column'>
+            <h2 className='text-center fw-bold'>Registration Form</h2>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={ownerRegisterationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ isSubmitting, isValid, dirty }) => (
+                <Form className='d-flex flex-column'>
+
+                  <Row className='mt-2'>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='firstName' className='small text-muted m-0' >First Name</FormLabel>
+                        <Field type='text' name='firstName' className='form-control' />
+                        <ErrorMessage name='firstName' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='lastName' className='small text-muted m-0' >Last Name</FormLabel>
+                        <Field type='text' name='lastName' className='form-control' />
+                        <ErrorMessage name='lastName' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Row className='mt-2'>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='email' className='small text-muted m-0' >Email</FormLabel>
+                        <Field type='email' name='email' className='form-control' />
+                        <ErrorMessage name='email' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='phoneNumber' className='small text-muted m-0' >Phone Number</FormLabel>
+                        <Field type='number' name='phoneNumber' className='form-control' />
+                        <ErrorMessage name='phoneNumber' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Row className='mt-2'>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='password' className='small text-muted m-0' >Password</FormLabel>
+                        <Field type='password' name='password' className='form-control' />
+                        <ErrorMessage name='password' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='confirmPassword' className='small text-muted m-0' >Confirm Password</FormLabel>
+                        <Field type='password' name='confirmPassword' className='form-control' />
+                        <ErrorMessage name='confirmPassword' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <FormGroup className='mt-2'>
+                    <FormLabel htmlFor='addressLine1' className='small text-muted m-0'  >Address Line 1</FormLabel>
+                    <Field type='text' name='addressLine1' className='form-control' />
+                    <ErrorMessage name='addressLine1' component='div' className='text-danger error-message' />
+                  </FormGroup>
+
+                  <Row className='mt-2'>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='addressLine2' className='small text-muted m-0' >Address Line 2</FormLabel>
+                        <Field type='text' name='addressLine2' className='form-control' />
+                        <ErrorMessage name='addressLine2' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='city' className='small text-muted m-0' >City</FormLabel>
+                        <Field type='text' name='city' className='form-control' />
+                        <ErrorMessage name='city' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Row className='mt-2'>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='state' className='small text-muted m-0' >State</FormLabel>
+                        <Field type='text' name='state' className='form-control' />
+                        <ErrorMessage name='state' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormLabel htmlFor='zipCode' className='small text-muted m-0' >Zip Code</FormLabel>
+                        <Field type='number' name='zipCode' className='form-control' />
+                        <ErrorMessage name='zipCode' component='div' className='text-danger error-message' />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Button type='submit' disabled={isSubmitting || !isValid || !dirty } className='mt-4 mx-auto'>Submit</Button>
+                </Form>
+              )}
+            </Formik>
+          </CardBody>
+        </Card>
+      </Container>
+    </div>
   );
 };
 
