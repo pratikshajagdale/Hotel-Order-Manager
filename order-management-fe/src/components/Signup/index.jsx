@@ -1,11 +1,12 @@
 import React from 'react';
 import { Container, Button, Col, Row, FormGroup, FormLabel, Card, CardBody } from 'react-bootstrap';
 import { ErrorMessage, Field, Formik, Form } from 'formik';
-import CryptoJS from "crypto-js";
-import { ownerRegisterationSchema } from '../../validations/signup';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
+import { ownerRegisterationSchema } from '../../validations/auth';
 import env from '../../config/env';
 import { registerOwner } from '../../services/owner.service';
-import '../../styles/login.css'
 
 function Signup() {
   const initialValues = {
@@ -22,30 +23,38 @@ function Signup() {
     zipCode: '',
   };
 
+  const navigate = useNavigate();
+
+  // handle request to register user
   const handleSubmit = async (values, { setSubmitting }) => {
-    setSubmitting(true);
+    try {
+      setSubmitting(true);
+      const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
+      const payload = { ...values, password: enpass };
+      delete payload.confirmPassword;
 
-    const enpass = CryptoJS.AES.encrypt(values.password, env.secretKey).toString();
-    const payload = { ...values, password: enpass };
-    delete payload.confirmPassword;
+      await registerOwner(payload);
+      setSubmitting(false);
+      toast.success('Owner registered successfully');
+      navigate('/');
+    } catch (err) {
+      setSubmitting(false);
+      toast.error(`Failed to register owner: ${err.message}`);
 
-    await registerOwner(payload).then((res) => {
-      setSubmitting(false);
-      console.log(res);
-      console.log("Success");
-    }).catch((err) => {
-      setSubmitting(false);
-      console.log(err);
-      console.log("Failed");
-    });
+    }
   };
+
+  const handleOnClickLogin = (e) => {
+    e.preventDefault();
+    navigate('/');
+  }
 
   return (
     <div className='view d-flex align-items-center m-0'>
       <Container className='d-flex justify-content-center'>
         <Card className='rounded-0 shadow-lg mx-5 col-6'>
           <CardBody className='m-4 d-flex flex-column'>
-            <h2 className='text-center fw-bold'>Registration Form</h2>
+            <h2 className='text-center fw-bold'>Registration</h2>
             <Formik
               initialValues={initialValues}
               validationSchema={ownerRegisterationSchema}
@@ -53,7 +62,6 @@ function Signup() {
             >
               {({ isSubmitting, isValid, dirty }) => (
                 <Form className='d-flex flex-column'>
-
                   <Row className='mt-2'>
                     <Col>
                       <FormGroup>
@@ -144,8 +152,10 @@ function Signup() {
                       </FormGroup>
                     </Col>
                   </Row>
-
-                  <Button type='submit' disabled={isSubmitting || !isValid || !dirty } className='mt-4 mx-auto'>Submit</Button>
+                  <Button type='submit' disabled={isSubmitting || !isValid || !dirty} className='mt-4 mx-auto'>Submit</Button>
+                  <div className='text-center m-3'>
+                    <p className='label-font m-0'>Already have an account ? <span role='button' className='text-primary' onClick={handleOnClickLogin}>Login</span></p>
+                  </div>
                 </Form>
               )}
             </Formik>

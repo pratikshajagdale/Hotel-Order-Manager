@@ -46,12 +46,11 @@ export const api = async ( method, path, body ) => {
                 res = await instance.delete(path);
                 break;
             default:
-                throw new Error("Invalid Method");
+                throw new Error('Invalid Method');
         }
         return res.data;    
     } catch (error) {
-        console.error('API error:', error);
-        throw error;
+        throw new Error( error?.response?.data?.message || error.message );
     }
 }
 

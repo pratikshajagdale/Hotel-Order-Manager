@@ -27,3 +27,8 @@
 .error-message {
     font-size: 12px;
 }
+
+.welcome-image {
+    max-width: 170px;
+    max-height: 170px;
+}
