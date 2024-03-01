@@ -54,6 +54,7 @@ const login = async ( payload ) => {
         if( password !== pass ) {
             throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
+
         if ( owner.status === status[1] ) {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
@@ -112,11 +113,11 @@ const forget = async ( payload ) => {
         
         const owner = await ownerRepo.findOne({ email });
         if( !owner ) {
-            throw new Error(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
         }
 
         if (owner.status === status[1]) {
-            throw new Error(STATUS_CODE.FORBIDDEN, 'User has not verified email');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
         // send verification email to the owner
         const verifyOptions = {
@@ -137,11 +138,11 @@ const reset = async ( payload ) => {
         const { email, newPassword, expires } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw new Error(STATUS_CODE.BAD_REQUEST, 'Invalid request');
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid request');
         }
 
         if (owner.status === status[1]) {
-            throw new Error(STATUS_CODE.FORBIDDEN, 'User has not verified email');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
 
         if (moment().valueOf() > expires) {
@@ -152,7 +153,7 @@ const reset = async ( payload ) => {
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
             await sendEmail(token, owner.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
-            throw new Error(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
+            throw CustomError(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
         owner.password = newPassword;

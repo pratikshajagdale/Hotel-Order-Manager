@@ -33,7 +33,7 @@ const login = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
 
-        return res.status(STATUS_CODE.CREATED).send(await ownerService.login({ ...body, password: depass }));
+        return res.status(STATUS_CODE.OK).send(await ownerService.login({ ...body, password: depass }));
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -43,7 +43,7 @@ const login = async (req, res) => {
 const verify = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.CREATED).send(await ownerService.verify(body)); 
+        return res.status(STATUS_CODE.OK).send(await ownerService.verify(body)); 
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -53,7 +53,7 @@ const verify = async (req, res) => {
 const forget = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.CREATED).send(await ownerService.forget(body)); 
+        return res.status(STATUS_CODE.OK).send(await ownerService.forget(body)); 
     } catch (error) {
         console.log(`Failed to send forgot password email ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -68,7 +68,7 @@ const reset = async (req, res) => {
         if (valid.error) {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
-        return res.status(STATUS_CODE.CREATED).send(await ownerService.reset(body)); 
+        return res.status(STATUS_CODE.OK).send(await ownerService.reset(body)); 
     } catch (error) {
         console.log(`Failed to reset password ${error}`);
         return res.status(error.code).send({ message: error.message });
