@@ -8,6 +8,7 @@ import orderModel from "../api/models/order.model.js";
 import paymentModel from "../api/models/payment.model.js";
 import notificationModel from "../api/models/notification.model.js";
 import env from "./env.js";
+import { Error } from "../api/utils/common.js";
 
 const config = {
     host: env.db.host,
@@ -31,7 +32,7 @@ const createDatabase = async () => {
         return new Sequelize({ ...config, database: env.db.name });
     } catch (error) {
         console.error(`🔴 Failed to initialize database: ${error.message}`);
-        throw error;
+        throw Error(error.code, error.message);
     }
 };
 
@@ -61,7 +62,7 @@ const initDb = async () => {
         await sequelize.sync({ force: false });
         console.log("🔄 Database synchronized successfully");
     } catch (error) {
-        throw error;
+        throw Error(error.code, error.message);
     }
 }
 

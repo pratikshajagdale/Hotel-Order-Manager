@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { Error } from "../utils/common";
 
 export const registrationValidation = ( payload ) => {
     try {
@@ -18,6 +19,7 @@ export const registrationValidation = ( payload ) => {
         return schema.validate(payload);   
     } catch (error) {
         console.log(`Error in validating register details ${error.message}`);
+        throw Error(error.code, error.message);
     }
 }
 
@@ -31,6 +33,7 @@ export const loginValidation = (payload) => {
         return schema.validate(payload);   
     } catch (error) {
         console.log(`Error in validation login details ${error.message}`);
+        throw Error(error.code, error.message);
     }
 }
 
@@ -43,5 +46,6 @@ export const passValidation = (payload) => {
         return schema.validate(payload);   
     } catch (error) {
         console.log(`Error in validation login details ${error.message}`);
+        throw Error(error.code, error.message);
     }
 }
