@@ -9,3 +9,8 @@ export const STATUS_CODE = {
     BAD_GATEWAY: 502,
     SERVICE_UNAVAILABLE: 503
 }
+
+export const EMAIL_ACTIONS = {
+    VERIFY_USER: 'verify-user',
+    FORGOT_PASSWORD: 'forgot-password'
+}

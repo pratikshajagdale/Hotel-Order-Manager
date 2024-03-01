@@ -16,7 +16,7 @@ const env = {
     password: process.env.DB_PASSWORD,
     dialect: process.env.DB_DIALECT
   },
-  email :{
+  email: {
     service: 'gmail',
     host: 'smtp.gmail.com',
     port: 465,

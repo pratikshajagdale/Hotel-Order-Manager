@@ -8,6 +8,12 @@ const save = async (payload) => {
     }
 }
 
-export default {
-    save
+const findOne = async( payload ) => {
+    try {
+        return await db.owners.findOne({ where: payload });   
+    } catch (error) {
+        throw error;
+    }
 }
+
+export default { save, findOne };
