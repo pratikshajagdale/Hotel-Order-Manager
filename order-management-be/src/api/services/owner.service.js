@@ -6,7 +6,7 @@ import { status } from "../models/owner.model.js";
 import { sendEmail } from "./email.service.js";
 import env from '../../config/env.js';
 import moment from 'moment';
-import { EMAIL_ACTIONS } from '../utils/common.js';
+import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 
 const create = async ( payload ) => {
     try {
@@ -25,10 +25,8 @@ const create = async ( payload ) => {
             zipCode: payload.zipCode,
             status: status[1]
         }
-
         // save the owner details to the database
         const data = await ownerRepo.save( owner );
-
         // send verification email to the owner
         const verifyOptions = {
             email: owner.email,
@@ -40,7 +38,7 @@ const create = async ( payload ) => {
         await sendEmail(token, owner.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;
     } catch (error) {
-        throw error;
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -49,15 +47,15 @@ const login = async ( payload ) => {
         const { email, password } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw new Error('Email not registered');
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Email not registered');
         }
 
         const pass = CryptoJS.AES.decrypt(owner.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
         if( password !== pass ) {
-            throw new Error('Invalid password');
+            throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
         if ( owner.status === status[1] ) {
-            throw new Error('Email not verified');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
         const { id, firstName, lastName } = owner;
@@ -67,7 +65,7 @@ const login = async ( payload ) => {
             data: owner
         };
     } catch (error) {
-        throw error;
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -76,11 +74,11 @@ const verify = async ( payload ) => {
         const { email, expires } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw new Error('Invalid request');
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
         }
 
         if (owner.status === status[0]) {
-            throw new Error('User already verified Please try login');
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
         }
 
         if (moment().valueOf() > expires) {
@@ -91,7 +89,7 @@ const verify = async ( payload ) => {
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
             await sendEmail(token, owner.email, EMAIL_ACTIONS.VERIFY_USER);
-            throw new Error(`Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
+            throw CustomError(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
         owner.status = status[0];
@@ -104,7 +102,7 @@ const verify = async ( payload ) => {
             data: owner
         };
     } catch (error) {
-        throw error;
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -114,11 +112,11 @@ const forget = async ( payload ) => {
         
         const owner = await ownerRepo.findOne({ email });
         if( !owner ) {
-            throw new Error('Invalid Email');
+            throw new Error(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
         }
 
         if (owner.status === status[1]) {
-            throw new Error('User has not verified email');
+            throw new Error(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
         // send verification email to the owner
         const verifyOptions = {
@@ -130,7 +128,7 @@ const forget = async ( payload ) => {
         await sendEmail(token, owner.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
         return { message: 'Recover password link sent. Please check your email.' }
     } catch (error) {
-        throw error;
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -139,11 +137,11 @@ const reset = async ( payload ) => {
         const { email, newPassword, expires } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw new Error('Invalid request');
+            throw new Error(STATUS_CODE.BAD_REQUEST, 'Invalid request');
         }
 
         if (owner.status === status[1]) {
-            throw new Error('User has not verified email');
+            throw new Error(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
 
         if (moment().valueOf() > expires) {
@@ -154,14 +152,14 @@ const reset = async ( payload ) => {
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
             await sendEmail(token, owner.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
-            throw new Error(`Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
+            throw new Error(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
         owner.password = newPassword;
         await owner.save();
         return { message: 'Password reset successfully' };
     } catch (error) {
-        throw error;
+        throw CustomError(error.code, error.message);
     }
 }
 

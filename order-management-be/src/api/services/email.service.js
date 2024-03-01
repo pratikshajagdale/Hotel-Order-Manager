@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import Mustache from "mustache";
 import { transporter } from "../../config/email.js"
 import env from "../../config/env.js";
-import { EMAIL_ACTIONS } from "../utils/common.js";
+import { EMAIL_ACTIONS, CustomError } from "../utils/common.js";
 
 const getEmailData = ( action ) => {
     let path = '', template = '';
@@ -42,10 +42,9 @@ export const sendEmail = async ( token, to, action ) => {
         };
     
         // send email to the user
-        await transporter.sendMail(options);
-        return;
+        return await transporter.sendMail(options);;
     } catch (error) {
         console.log(`Error sending verification email ${error}`);
-        throw error;   
+        throw CustomError(error.code, error.message);   
     }
 }
