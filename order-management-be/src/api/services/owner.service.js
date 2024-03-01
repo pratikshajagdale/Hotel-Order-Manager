@@ -6,7 +6,7 @@ import { status } from "../models/owner.model.js";
 import { sendEmail } from "./email.service.js";
 import env from '../../config/env.js';
 import moment from 'moment';
-import { EMAIL_ACTIONS, Error, STATUS_CODE } from '../utils/common.js';
+import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 
 const create = async ( payload ) => {
     try {
@@ -38,7 +38,7 @@ const create = async ( payload ) => {
         await sendEmail(token, owner.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;
     } catch (error) {
-        throw Error(error.code, error.message);
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -47,15 +47,15 @@ const login = async ( payload ) => {
         const { email, password } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw Error(STATUS_CODE.NOT_FOUND, 'Email not registered');
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Email not registered');
         }
 
         const pass = CryptoJS.AES.decrypt(owner.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
         if( password !== pass ) {
-            throw Error(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
+            throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
         if ( owner.status === status[1] ) {
-            throw Error(STATUS_CODE.FORBIDDEN, 'Email not verified');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
         const { id, firstName, lastName } = owner;
@@ -65,7 +65,7 @@ const login = async ( payload ) => {
             data: owner
         };
     } catch (error) {
-        throw Error(error.code, error.message);
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -74,11 +74,11 @@ const verify = async ( payload ) => {
         const { email, expires } = payload;
         const owner = await ownerRepo.findOne({ email });
         if (!owner) {
-            throw Error(STATUS_CODE.NOT_FOUND, 'Invalid request');
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
         }
 
         if (owner.status === status[0]) {
-            throw Error(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
         }
 
         if (moment().valueOf() > expires) {
@@ -89,7 +89,7 @@ const verify = async ( payload ) => {
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
             await sendEmail(token, owner.email, EMAIL_ACTIONS.VERIFY_USER);
-            throw Error(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
+            throw CustomError(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
         owner.status = status[0];
@@ -102,7 +102,7 @@ const verify = async ( payload ) => {
             data: owner
         };
     } catch (error) {
-        throw Error(error.code, error.message);
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -128,7 +128,7 @@ const forget = async ( payload ) => {
         await sendEmail(token, owner.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
         return { message: 'Recover password link sent. Please check your email.' }
     } catch (error) {
-        throw Error(error.code, error.message);
+        throw CustomError(error.code, error.message);
     }
 }
 
@@ -159,7 +159,7 @@ const reset = async ( payload ) => {
         await owner.save();
         return { message: 'Password reset successfully' };
     } catch (error) {
-        throw Error(error.code, error.message);
+        throw CustomError(error.code, error.message);
     }
 }
 

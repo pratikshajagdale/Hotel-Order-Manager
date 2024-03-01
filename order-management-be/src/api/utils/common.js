@@ -16,7 +16,7 @@ export const EMAIL_ACTIONS = {
     FORGOT_PASSWORD: 'forgot-password'
 }
 
-export const Error = (
+export const CustomError = (
     code = STATUS_CODE.INTERNAL_SERVER_ERROR,
     message = 'Something went wrong.'
 ) => {
