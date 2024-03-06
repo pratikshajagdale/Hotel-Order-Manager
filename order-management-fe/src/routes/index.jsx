@@ -1,9 +1,9 @@
-import Login from '../components/Login';
 import { Routes as Switch, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import PublicRoutes from './PublicRoutes';
 import AuthRoutes from './AuthRoutes';
-import Signup from '../components/Signup';
-import ForgotPassword from '../components/ForgetPassword';
+import Login from '../pages/Login';
+import Signup from '../pages/Signup';
+import ForgotPassword from '../pages/ForgetPassword';
 import VerifyUser from '../pages/VerifyOwner';
 import ResetPassword from "../pages/ResetPassword";
 import Dashboard from "../pages/Dashboard";
@@ -14,6 +14,7 @@ export default function Routes() {
             <Switch>
                 <Route path="/" element={<PublicRoutes />}>
                     <Route path="" element={<Login />} />
+                    <Route path='login' element={<Login />} />
                     <Route path="signup" element={<Signup />} />
                     <Route path="forgot-password" element={<ForgotPassword />} />
                     <Route path="verify" element={<VerifyUser />} />

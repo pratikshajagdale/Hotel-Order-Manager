@@ -2,6 +2,7 @@ import Routes from './routes';
 import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/styles/auth.css';
+import './assets/styles/button.css';
 
 function App() {
   return (

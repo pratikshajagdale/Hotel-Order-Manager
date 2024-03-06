@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardBody, Col, Container, FormGroup, FormLabel, Row } from 'react-bootstrap';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import CryptoJS from "crypto-js";
+import { toast } from 'react-toastify';
 import { passwordSchema } from '../../validations/auth';
 import { resetPassword } from '../../services/owner.service';
-import { toast } from 'react-toastify';
 import env from '../../config/env';
+import AuthContainer from '../../components/AuthContainer';
+import CustomFormGroup from '../../components/CustomFormGroup';
+import CustomButton from '../../components/CustomButton';
 
 const ForgotPassword = () => {
     const [data, setData] = useState('');
@@ -52,43 +54,22 @@ const ForgotPassword = () => {
     };
 
     return (
-        data && 
-        <div className='view d-flex align-items-center'>
-            <Container>
-                <Row className='justify-content-center'>
-                    <Col className='col-md-6'>
-                        <Card className='rounded-0 shadow-lg'>
-                            <CardBody className='m-4'>
-                                <h2 className='text-center fw-bold'>Reset Password</h2>
-                                <Formik
-                                    initialValues={initialValues}
-                                    validationSchema={passwordSchema}
-                                    onSubmit={handleSubmit}
-                                >
-                                    {({ isSubmitting, dirty, isValid }) => (
-                                        <Form className='d-flex flex-column'>
-                                            <FormGroup className='mt-2'>
-                                                <FormLabel htmlFor='password' className='small text-muted m-0'>New Password</FormLabel>
-                                                <Field type='password' name='password' className='form-control' />
-                                                <ErrorMessage name='password' component='div' className='text-danger error-message' />
-                                            </FormGroup>
-                                            <FormGroup className='mt-2'>
-                                                <FormLabel htmlFor='confirmPassword' className='small text-muted m-0'>Confirm Password</FormLabel>
-                                                <Field type='password' name='confirmPassword' className='form-control' />
-                                                <ErrorMessage name='confirmPassword' component='div' className='text-danger error-message' />
-                                            </FormGroup>
-                                            <Button disabled={isSubmitting || !isValid || !dirty} variant='primary' type='submit' className='my-4 mx-auto'>
-                                                Reset
-                                            </Button>
-                                        </Form>
-                                    )}
-                                </Formik>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+        data &&
+        <AuthContainer title='Reset Password'>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={passwordSchema}
+                onSubmit={handleSubmit}
+            >
+                {({ isSubmitting, dirty, isValid }) => (
+                    <Form className='d-flex flex-column'>
+                        <CustomFormGroup name='password' type='password' label='New Passwoord' />
+                        <CustomFormGroup name='confirmPassword' type='password' label='Confirm Passwoord' />
+                        <CustomButton label='Reset' disabled={isSubmitting || !isValid || !dirty} type='submit' />
+                    </Form>
+                )}
+            </Formik>
+        </AuthContainer>
     );
 };
 
