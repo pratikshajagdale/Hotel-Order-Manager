@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 const emailRegex = /^[^\s@]+@(?:[^\s@]+\.(?:com|net))$/;
-export const ownerRegisterationSchema = Yup.object().shape({
+export const ownerRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().min(3).max(30).required('First Name is required'),
     lastName: Yup.string().min(3).max(30).required('Last Name is required'),
     phoneNumber: Yup.string().min(10).max(10).required('Phone Number is required'),
@@ -10,7 +10,7 @@ export const ownerRegisterationSchema = Yup.object().shape({
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         'Password must contain at least 8 characters, one letter, one number, and one special character'
     ).required('Password is required'),    
-    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required(),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Confirm Password is a required'),
     addressLine1: Yup.string().required('Address Line 1 is required'),
     addressLine2: Yup.string(),
     city: Yup.string().required('City is required'),
