@@ -9,8 +9,8 @@ function CustomFormGroup({
     return (
         <FormGroup className='mt-2'>
             <FormLabel htmlFor={name} className='small text-muted m-0'>{label}</FormLabel>
-            <Field type={type} name={name} className='form-control' />
-            <ErrorMessage name={name} component='div' className='text-danger error-message' />
+            <Field data-testid={`${name}-input-${new Date().getTime()}`} type={type} name={name} className='form-control' />
+            <ErrorMessage data-testid={`${name}-error-${new Date().getTime()}`} name={name} component='div' className='text-danger error-message' />
         </FormGroup>
     )
 }
