@@ -1,9 +1,9 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RouterDom from "react-router-dom";
-import Login from "../../pages/Login";
-import * as apiClient from "../../api/apiClient";
 import { toast } from "react-toastify";
+import * as apiClient from "../../api/apiClient";
+import Login from "../../pages/Login";
 import { emailTestIdRegex, loginFailed, loginSuccess, navigateForgotPassword, navigateSignup, passwordTestIdRegex, requiredCredentials, validCredentials } from "../utils/dummy.login";
 
 jest.mock('react-router-dom', () => ({
