@@ -18,6 +18,7 @@ const localStorageMock = {
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 console.error = jest.fn();
+console.log = jest.fn();
 
 describe('test login page', () => {
     beforeEach(() => {

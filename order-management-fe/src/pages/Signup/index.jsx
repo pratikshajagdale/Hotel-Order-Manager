@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
-import { ownerRegisterationSchema } from '../../validations/auth';
+import { ownerRegistrationSchema } from '../../validations/auth';
 import env from '../../config/env';
 import { registerOwner } from '../../services/owner.service';
 import AuthContainer from '../../components/AuthContainer';
@@ -57,7 +57,7 @@ function Signup() {
     <AuthContainer title={'Registration'}>
       <Formik
         initialValues={initialValues}
-        validationSchema={ownerRegisterationSchema}
+        validationSchema={ownerRegistrationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, isValid, dirty }) => (
