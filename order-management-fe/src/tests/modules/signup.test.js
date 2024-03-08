@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import Signup from "../../pages/Signup";
-import { addressLine1TestIdRegex, cityTestIdRegex, confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, stateTestIdRegex, successfulRegistration, zipCodeTestIdRegex } from "../utils/dummy.signup";
 import { act } from "react-dom/test-utils";
 import userEvent from "@testing-library/user-event";
 import RouterDom from "react-router-dom";
-import * as apiClient from "../../api/apiClient.js";
 import { toast } from "react-toastify";
+import Signup from "../../pages/Signup";
+import * as apiClient from "../../api/apiClient.js";
+import { addressLine1TestIdRegex, cityTestIdRegex, confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, stateTestIdRegex, successfulRegistration, zipCodeTestIdRegex } from "../utils/dummy.signup";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -213,6 +213,8 @@ describe('test signup page', () => {
         jest.spyOn(toast, 'error');
 
         render(<Signup />);
+
+        // get all the fields of the form
         const obj = {
             firstNameInput: screen.getByTestId(firstNameTestIdRegex),
             lastNameInput: screen.getByTestId(lastNameTestIdRegex),
@@ -226,6 +228,7 @@ describe('test signup page', () => {
             zipCodeInput: screen.getByTestId(zipCodeTestIdRegex)
         }
 
+        // fill the form with appropriate values
         await act(async () => {
             userEvent.type(obj.firstNameInput, values.firstName);
             userEvent.type(obj.lastNameInput, values.lastName);
@@ -239,9 +242,12 @@ describe('test signup page', () => {
             userEvent.type(obj.zipCodeInput, values.zipCode);
         });
 
+        // submit the form
         const submit = screen.getByText(submitText);
         expect(submit).not.toBeDisabled();
         await act(async () => { userEvent.click(submit); });
+
+        // expect the error message from the api failure
         expect(toast.error).toHaveBeenCalledWith(toastMessage);
     });
 
@@ -255,6 +261,8 @@ describe('test signup page', () => {
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
         render(<Signup />);
+
+        // get all the fields on the registration form
         const obj = {
             firstNameInput: screen.getByTestId(firstNameTestIdRegex),
             lastNameInput: screen.getByTestId(lastNameTestIdRegex),
@@ -268,6 +276,7 @@ describe('test signup page', () => {
             zipCodeInput: screen.getByTestId(zipCodeTestIdRegex)
         }
 
+        // fill the form with appropriate values
         await act(async () => {
             userEvent.type(obj.firstNameInput, values.firstName);
             userEvent.type(obj.lastNameInput, values.lastName);
@@ -281,10 +290,12 @@ describe('test signup page', () => {
             userEvent.type(obj.zipCodeInput, values.zipCode);
         });
 
+        // submit the form
         const submit = screen.getByText(submitText);
         expect(submit).not.toBeDisabled();
         await act(async () => { userEvent.click(submit); });
 
+        // on success compare the toast message and navigation
         expect(toast.success).toHaveBeenCalledWith(toastMessage);
         expect(navigate).toHaveBeenCalledWith(path);
     });
