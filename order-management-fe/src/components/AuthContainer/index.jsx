@@ -6,7 +6,7 @@ function AuthContainer({ children, title = '' }) {
             <Container className='d-flex justify-content-center'>
                 <Card className='rounded-0 shadow-lg mx-5 col-6'>
                     <CardBody className='m-4 d-flex flex-column'>
-                        <h2 className='custom-label text-center fw-bold'>{title}</h2>
+                        <h2 data-testid={`${title}-${new Date().getTime()}`} className='custom-label text-center fw-bold'>{title}</h2>
                         {children}
                     </CardBody>
                 </Card>
