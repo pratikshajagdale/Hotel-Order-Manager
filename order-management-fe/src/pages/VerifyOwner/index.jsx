@@ -7,7 +7,7 @@ import { verify } from '../../services/owner.service';
 import { toast } from 'react-toastify';
 import AuthContainer from '../../components/AuthContainer';
 
-function VerifyUser() {
+function VerifyOwner() {
     const [name, setName] = useState('');
     const navigate = useNavigate();
 
@@ -23,12 +23,12 @@ function VerifyUser() {
                 const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
                 const keys = Object.keys(data);
                 if (keys.length === 3 && keys.includes('email') && keys.includes('name') && keys.includes('expires')) {
-                    setName(name);
+                    setName(data.name);
                     const payload = { email: data.email, expires: data.expires };
                     const res = await verify(payload);
                     localStorage.setItem('token', res.token);
                     toast.success('Verified successfully');
-                    navigate('/');
+                    navigate('/dashboard');
                 }
             } catch (err) {
                 toast.error(`Failed to verify email: ${err.message}`);
@@ -48,4 +48,4 @@ function VerifyUser() {
     )
 };
 
-export default VerifyUser;
+export default VerifyOwner;

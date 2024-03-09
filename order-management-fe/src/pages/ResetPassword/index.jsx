@@ -10,7 +10,7 @@ import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
     const [data, setData] = useState('');
     const navigate = useNavigate();
     const initialValues = {
@@ -73,4 +73,4 @@ const ForgotPassword = () => {
     );
 };
 
-export default ForgotPassword;
+export default ResetPassword;
