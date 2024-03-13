@@ -1,0 +1,252 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Order Management Tool",
+		"description": "API for managing orders",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:8080/api"
+		}
+	],
+	"paths": {
+		"/owner/register": {
+			"post": {
+				"summary": "Register a new owner",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"firstName": {
+										"type": "string",
+										"example": "John"
+									},
+									"lastName": {
+										"type": "string",
+										"example": "Doe"
+									},
+									"phoneNumber": {
+										"type": "number",
+										"example": 6514265140
+									},
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									},
+									"password": {
+										"type": "string",
+										"pattern": "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+										"example": "U2FsdGVkX1+ILQ91VejAVpr/xiaq/Mf0XsHxR7fEKR4=",
+										"description": "Password@123"
+									},
+									"addressLine1": {
+										"type": "string",
+										"example": "123 Street"
+									},
+									"addressLine2": {
+										"type": "string",
+										"example": "Apt 101"
+									},
+									"city": {
+										"type": "string",
+										"example": "New York"
+									},
+									"state": {
+										"type": "string",
+										"example": "NY"
+									},
+									"zipCode": {
+										"type": "number",
+										"example": 100010
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Created"
+					},
+					"400": {
+						"description": "Bad Request"
+					}
+				},
+				"tags": [
+					"Owner"
+				]
+			}
+		},
+		"/owner/login": {
+			"post": {
+				"summary": "Login as an owner",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									},
+									"password": {
+										"type": "string",
+										"pattern": "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+										"example": "U2FsdGVkX1+ILQ91VejAVpr/xiaq/Mf0XsHxR7fEKR4=",
+										"description": "Password@123"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Unauthorized"
+					}
+				},
+				"tags": [
+					"Owner"
+				]
+			}
+		},
+		"/owner/verify": {
+			"post": {
+				"summary": "Verify owner account",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									},
+									"expires": {
+										"type": "string",
+										"format": "date-time",
+										"example": "2024-03-15T12:00:00Z"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				},
+				"tags": [
+					"Owner"
+				]
+			}
+		},
+		"/owner/forget": {
+			"post": {
+				"summary": "Send password reset email",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				},
+				"tags": [
+					"Owner"
+				]
+			}
+		},
+		"/owner/reset": {
+			"post": {
+				"summary": "Reset owner password",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									},
+									"newPassword": {
+										"type": "string",
+										"pattern": "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+										"example": "U2FsdGVkX1+ILQ91VejAVpr/xiaq/Mf0XsHxR7fEKR4=",
+										"description": "Password@123"
+									},
+									"expires": {
+										"type": "string",
+										"format": "date-time",
+										"example": "2024-03-15T12:00:00Z"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK"
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				},
+				"tags": [
+					"Owner"
+				]
+			}
+		}
+	}
+}
