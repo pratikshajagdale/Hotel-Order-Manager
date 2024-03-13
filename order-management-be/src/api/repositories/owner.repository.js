@@ -5,7 +5,8 @@ const save = async (payload) => {
     try {
         return await db.owners.create(payload);   
     } catch (error) {
-        throw CustomError(error.code, error.message);
+        const err = error?.errors[0]?.message;
+        throw CustomError(error.code, (err || error.message));
     }
 }
 
@@ -13,7 +14,8 @@ const findOne = async( payload ) => {
     try {
         return await db.owners.findOne({ where: payload });   
     } catch (error) {
-        throw CustomError(error.code, error.message);
+        const err = error?.errors[0]?.message;
+        throw CustomError(error.code, (err || error.message));
     }
 }
 
