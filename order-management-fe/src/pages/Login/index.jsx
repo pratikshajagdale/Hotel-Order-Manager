@@ -4,7 +4,7 @@ import CryptoJS from "crypto-js";
 import { toast } from 'react-toastify';
 import AuthContainer from "../../components/AuthContainer";
 import { loginSchema } from '../../validations/auth';
-import { login } from '../../services/owner.service';
+import { login } from '../../services/user.service';
 import env from '../../config/env';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';

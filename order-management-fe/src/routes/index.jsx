@@ -4,7 +4,7 @@ import AuthRoutes from './AuthRoutes';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import ForgotPassword from '../pages/ForgetPassword';
-import VerifyOwner from '../pages/VerifyOwner';
+import VerifyUser from '../pages/VerifyUser';
 import ResetPassword from "../pages/ResetPassword";
 import Dashboard from "../pages/Dashboard";
 
@@ -17,7 +17,7 @@ export default function Routes() {
                     <Route path='login' element={<Login />} />
                     <Route path="signup" element={<Signup />} />
                     <Route path="forgot-password" element={<ForgotPassword />} />
-                    <Route path="verify" element={<VerifyOwner />} />
+                    <Route path="verify" element={<VerifyUser />} />
                     <Route path="reset" element={<ResetPassword />} />
                 </Route>
                 <Route path="/" element={<AuthRoutes />}>
