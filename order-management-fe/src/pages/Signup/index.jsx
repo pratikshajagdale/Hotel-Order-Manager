@@ -4,9 +4,9 @@ import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
-import { ownerRegistrationSchema } from '../../validations/auth';
+import { userRegistrationSchema } from '../../validations/auth';
 import env from '../../config/env';
-import { registerOwner } from '../../services/owner.service';
+import { registerUser } from '../../services/user.service';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
@@ -19,12 +19,7 @@ function Signup() {
     phoneNumber: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
+    confirmPassword: ''
   };
 
   const navigate = useNavigate();
@@ -37,13 +32,13 @@ function Signup() {
       const payload = { ...values, password: enpass };
       delete payload.confirmPassword;
 
-      await registerOwner(payload);
+      await registerUser(payload);
       setSubmitting(false);
-      toast.success('Owner registered successfully');
+      toast.success('User registered successfully');
       navigate('/');
     } catch (err) {
       setSubmitting(false);
-      toast.error(`Failed to register owner: ${err.message}`);
+      toast.error(`Failed to register user: ${err.message}`);
 
     }
   };
@@ -57,7 +52,7 @@ function Signup() {
     <AuthContainer title={'Registration'}>
       <Formik
         initialValues={initialValues}
-        validationSchema={ownerRegistrationSchema}
+        validationSchema={userRegistrationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, isValid, dirty }) => (
@@ -73,15 +68,6 @@ function Signup() {
             <Row className='mt-2'>
               <Col><CustomFormGroup name='password' type='password' label='Password' /></Col>
               <Col><CustomFormGroup name='confirmPassword' type='password' label='Confirm Password' /></Col>
-            </Row>
-            <CustomFormGroup name='addressLine1' type='text' label='Address Line 1' />
-            <Row className='mt-2'>
-              <Col><CustomFormGroup name='addressLine2' type='text' label='Address Line 2' /></Col>
-              <Col><CustomFormGroup name='city' type='text' label='City' /></Col>
-            </Row>
-            <Row className='mt-2'>
-              <Col><CustomFormGroup name='state' type='text' label='State' /></Col>
-              <Col><CustomFormGroup name='zipCode' type='number' label='Zip Code' /></Col>
             </Row>
             <CustomButton type='submit' disabled={isSubmitting || !isValid || !dirty} label='Submit' />
             <div className='text-center mx-3'>

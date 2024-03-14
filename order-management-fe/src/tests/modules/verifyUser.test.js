@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
-import VerifyOwner from "../../pages/VerifyOwner";
+import { render, screen, waitFor } from "@testing-library/react";
+import VerifyUser from "../../pages/VerifyUser";
 import RouterDom from "react-router-dom";
-import { apiFailure, apiResponse, apiSuccess, invalidToken, notFoundRedirection, validToken } from "../utils/dummy.verifyOwner";
+import { apiFailure, apiResponse, apiSuccess, invalidToken, notFoundRedirection, validToken } from "../utils/dummy.verifyUser.js";
 import { toast } from "react-toastify";
 import * as apiClient from "../../api/apiClient.js";
 
@@ -16,7 +16,7 @@ const localStorageMock = {
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 console.error = jest.fn();
 
-describe('test verify owner page', () => {
+describe('test verify user page', () => {
     test('test redirection to 404', () => {
         const { path } = notFoundRedirection;
 
@@ -25,7 +25,7 @@ describe('test verify owner page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<VerifyOwner />);
+        render(<VerifyUser />);
 
         // redirect to /404
         expect(navigate).toHaveBeenCalledWith(path)
@@ -37,7 +37,7 @@ describe('test verify owner page', () => {
         // mock url with invalid token
         window.history.pushState({}, 'test page', `/?token=${token}`);
         jest.spyOn(toast, 'error');
-        render(<VerifyOwner />)
+        render(<VerifyUser />)
 
         // element with Welcome !! text not found and error toast popped up
         expect(screen.queryByText(screenText)).not.toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('test verify owner page', () => {
         jest.spyOn(toast, 'error');
         jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errorMessage));
 
-        render(<VerifyOwner />);
+        render(<VerifyUser />);
 
         // expect the api is failed
         await waitFor(() => { expect(toast.error).toHaveBeenCalledWith(toastMessage); });
@@ -68,7 +68,7 @@ describe('test verify owner page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<VerifyOwner />);
+        render(<VerifyUser />);
 
         // on api success render the screen and token is set in localstorage
         await waitFor(async () => { 

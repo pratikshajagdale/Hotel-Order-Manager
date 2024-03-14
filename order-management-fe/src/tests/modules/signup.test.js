@@ -5,7 +5,7 @@ import RouterDom from "react-router-dom";
 import { toast } from "react-toastify";
 import Signup from "../../pages/Signup";
 import * as apiClient from "../../api/apiClient.js";
-import { addressLine1TestIdRegex, cityTestIdRegex, confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, stateTestIdRegex, successfulRegistration, zipCodeTestIdRegex } from "../utils/dummy.signup";
+import { confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, successfulRegistration } from "../utils/dummy.signup";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -85,51 +85,6 @@ describe('test signup page', () => {
         })
         expect(document.activeElement).not.toBe(cpasswordInput);
         expect(screen.getByText(errors.confirmPassword)).toBeInTheDocument();
-
-        // testing the required error for address 1 field
-        expect(screen.queryByText(errors.addressLine1)).not.toBeInTheDocument();
-        const addressLine1Input = screen.getByTestId(addressLine1TestIdRegex);
-        addressLine1Input.focus();
-        expect(document.activeElement).toBe(addressLine1Input);
-        await act(async () => {
-            addressLine1Input.blur();
-        })
-        expect(document.activeElement).not.toBe(addressLine1Input);
-        expect(screen.getByText(errors.addressLine1)).toBeInTheDocument();
-
-        // testing the required error for city field
-        expect(screen.queryByText(errors.city)).not.toBeInTheDocument();
-        const cityInput = screen.getByTestId(cityTestIdRegex);
-        cityInput.focus();
-        expect(document.activeElement).toBe(cityInput);
-        await act(async () => {
-            cityInput.blur();
-        })
-        expect(document.activeElement).not.toBe(cityInput);
-        expect(screen.getByText(errors.city)).toBeInTheDocument();
-
-        // testing the required error for state field
-        expect(screen.queryByText(errors.state)).not.toBeInTheDocument();
-        const stateInput = screen.getByTestId(stateTestIdRegex);
-        stateInput.focus();
-        expect(document.activeElement).toBe(stateInput);
-        await act(async () => {
-            stateInput.blur();
-        })
-        expect(document.activeElement).not.toBe(stateInput);
-        expect(screen.getByText(errors.state)).toBeInTheDocument();
-
-        // testing the required error for zip code field
-        expect(screen.queryByText(errors.zipCode)).not.toBeInTheDocument();
-        const zipCodeInput = screen.getByTestId(zipCodeTestIdRegex);
-        zipCodeInput.focus();
-        expect(document.activeElement).toBe(zipCodeInput);
-        await act(async () => {
-            zipCodeInput.blur();
-        })
-        expect(document.activeElement).not.toBe(zipCodeInput);
-        expect(screen.getByText(errors.zipCode)).toBeInTheDocument();
-
     });
 
     test('test valid valued for fields validations', async () => {
@@ -222,10 +177,6 @@ describe('test signup page', () => {
             phoneNumberInput: screen.getByTestId(phoneNumberTestIdRegex),
             passwordInput: screen.getAllByTestId(passwordTestIdRegex)[0],
             cpasswordInput: screen.getByTestId(confirmPasswordTestIdRegex),
-            address1Input: screen.getByTestId(addressLine1TestIdRegex),
-            cityInput: screen.getByTestId(cityTestIdRegex),
-            stateInput: screen.getByTestId(stateTestIdRegex),
-            zipCodeInput: screen.getByTestId(zipCodeTestIdRegex)
         }
 
         // fill the form with appropriate values
@@ -236,10 +187,6 @@ describe('test signup page', () => {
             userEvent.type(obj.phoneNumberInput, values.phoneNumber);
             userEvent.type(obj.passwordInput, values.password);
             userEvent.type(obj.cpasswordInput, values.confirmPassword);
-            userEvent.type(obj.address1Input, values.addressLine1);
-            userEvent.type(obj.cityInput, values.city);
-            userEvent.type(obj.stateInput, values.state);
-            userEvent.type(obj.zipCodeInput, values.zipCode);
         });
 
         // submit the form
@@ -270,10 +217,6 @@ describe('test signup page', () => {
             phoneNumberInput: screen.getByTestId(phoneNumberTestIdRegex),
             passwordInput: screen.getAllByTestId(passwordTestIdRegex)[0],
             cpasswordInput: screen.getByTestId(confirmPasswordTestIdRegex),
-            address1Input: screen.getByTestId(addressLine1TestIdRegex),
-            cityInput: screen.getByTestId(cityTestIdRegex),
-            stateInput: screen.getByTestId(stateTestIdRegex),
-            zipCodeInput: screen.getByTestId(zipCodeTestIdRegex)
         }
 
         // fill the form with appropriate values
@@ -284,10 +227,6 @@ describe('test signup page', () => {
             userEvent.type(obj.phoneNumberInput, values.phoneNumber);
             userEvent.type(obj.passwordInput, values.password);
             userEvent.type(obj.cpasswordInput, values.confirmPassword);
-            userEvent.type(obj.address1Input, values.addressLine1);
-            userEvent.type(obj.cityInput, values.city);
-            userEvent.type(obj.stateInput, values.state);
-            userEvent.type(obj.zipCodeInput, values.zipCode);
         });
 
         // submit the form

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
 import { emailSchema } from '../../validations/auth';
-import { forgotPassword } from '../../services/owner.service';
+import { forgotPassword } from '../../services/user.service';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';

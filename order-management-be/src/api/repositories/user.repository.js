@@ -3,7 +3,7 @@ import { CustomError } from "../utils/common.js";
 
 const save = async (payload) => {
     try {
-        return await db.owners.create(payload);   
+        return await db.users.create(payload);   
     } catch (error) {
         const err = error?.errors[0]?.message;
         throw CustomError(error.code, (err || error.message));
@@ -12,7 +12,7 @@ const save = async (payload) => {
 
 const findOne = async( payload ) => {
     try {
-        return await db.owners.findOne({ where: payload });   
+        return await db.users.findOne({ where: payload });   
     } catch (error) {
         const err = error?.errors[0]?.message;
         throw CustomError(error.code, (err || error.message));

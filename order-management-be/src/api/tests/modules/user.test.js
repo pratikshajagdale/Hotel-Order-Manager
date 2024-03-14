@@ -1,11 +1,11 @@
-import ownerController from "../../controllers/owner.controllers";
+import userController from "../../controllers/user.controllers";
 import { db } from "../../../config/database";
-import dummyData from "../utils/dummy.owner";
+import dummyData from "../utils/dummy.user";
 
 // mock the database operations
 jest.mock('../../../config/database.js', () => ({
     db: {
-        owners: {
+        users: {
             create: jest.fn(),
             findOne: jest.fn()
         }
@@ -24,11 +24,11 @@ const res = {
     send: jest.fn()
 };
 
-describe('testing owner cases', () => {
-    // Register owner test cases
+describe('testing user cases', () => {
+    // Register user test cases
     test('test invalid email to register a user', async () => {
         const { invalidEmailData } = dummyData;
-         await ownerController.create({ body: invalidEmailData.body }, res);
+         await userController.create({ body: invalidEmailData.body }, res);
 
         // Status code should be 400
         expect(res.status).toHaveBeenCalledWith(invalidEmailData.res.code);
@@ -42,7 +42,7 @@ describe('testing owner cases', () => {
 
     test('test invalid password to register a user', async () => {
         const { invalidPasswordData } = dummyData;
-        await ownerController.create({ body: invalidPasswordData.body }, res);
+        await userController.create({ body: invalidPasswordData.body }, res);
 
         // Status code should be 400
         expect(res.status).toHaveBeenCalledWith(invalidPasswordData.res.code);
@@ -57,7 +57,7 @@ describe('testing owner cases', () => {
 
     test('test invalid phone number to register a user', async () => {
         const { invalidPhoneData } = dummyData;
-        await ownerController.create({ body: invalidPhoneData.body }, res);
+        await userController.create({ body: invalidPhoneData.body }, res);
 
         // Status code should be 400
         expect(res.status).toHaveBeenCalledWith(invalidPhoneData.res.code);
@@ -71,7 +71,7 @@ describe('testing owner cases', () => {
 
     test('test invalid body to register a user', async () => {
         const { invalidData } = dummyData;
-        await ownerController.create({ body: invalidData.body }, res);
+        await userController.create({ body: invalidData.body }, res);
 
         // Status code should be 400
         expect(res.status).toHaveBeenCalledWith(invalidData.res.code);
@@ -83,29 +83,29 @@ describe('testing owner cases', () => {
         expect(data).toEqual(invalidData.res.data);
     });
 
-    test('test successful register of owner', async () => {
-        const { owner } = dummyData;
-        // mock owner details
-        db.owners.create.mockResolvedValue(owner.db)
+    test('test successful register of user', async () => {
+        const { user } = dummyData;
+        // mock user details
+        db.users.create.mockResolvedValue(user.db)
 
-        await ownerController.create({ body: owner.body }, res);
+        await userController.create({ body: user.body }, res);
         
         // Status code should be 201
-        expect(res.status).toHaveBeenCalledWith(owner.res.code);
+        expect(res.status).toHaveBeenCalledWith(user.res.code);
 
         // The res.send function is called exactly ones
         expect(res.send.mock.calls).toHaveLength(1);
         
-        // expected response should match the owner details from mocked database
-        expect(res.send).toHaveBeenCalledWith(owner.db);
+        // expected response should match the user details from mocked database
+        expect(res.send).toHaveBeenCalledWith(user.db);
     });
 
-    // Login owner test cases
+    // Login user test cases
     test('test email not registered', async () => {        
         const { unregisteredEmailData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(undefined);
-        await ownerController.login({ body: unregisteredEmailData.body }, res);
+        db.users.findOne.mockResolvedValue(undefined);
+        await userController.login({ body: unregisteredEmailData.body }, res);
 
         // Status code should be 404
         expect(res.status).toHaveBeenCalledWith(unregisteredEmailData.res.code);
@@ -121,8 +121,8 @@ describe('testing owner cases', () => {
     test('test invalid password', async () => {
         const { incorrectPasswordData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(incorrectPasswordData.db);
-        await ownerController.login({ body: incorrectPasswordData.body }, res);
+        db.users.findOne.mockResolvedValue(incorrectPasswordData.db);
+        await userController.login({ body: incorrectPasswordData.body }, res);
 
         // Status code should be 401
         expect(res.status).toHaveBeenCalledWith(incorrectPasswordData.res.code);
@@ -140,8 +140,8 @@ describe('testing owner cases', () => {
     test('test email not verified', async () => {
         const { inActiveData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(inActiveData.db);
-        await ownerController.login({ body: inActiveData.body }, res);
+        db.users.findOne.mockResolvedValue(inActiveData.db);
+        await userController.login({ body: inActiveData.body }, res);
 
         // Status code should be 401
         expect(res.status).toHaveBeenCalledWith(inActiveData.res.code);
@@ -154,11 +154,11 @@ describe('testing owner cases', () => {
         expect(data).toEqual(inActiveData.res.data);
     })
 
-    test('test successful login of owner', async () => {
+    test('test successful login of user', async () => {
         const { successLoginData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(successLoginData.db);
-        await ownerController.login({ body: successLoginData.body }, res);
+        db.users.findOne.mockResolvedValue(successLoginData.db);
+        await userController.login({ body: successLoginData.body }, res);
 
         // Status code should be 200
         expect(res.status).toHaveBeenCalledWith(successLoginData.res.code);
@@ -178,8 +178,8 @@ describe('testing owner cases', () => {
     test('test user already verified', async () => {
         const { userAlreadyVerifiedData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(userAlreadyVerifiedData.db);
-        await ownerController.verify({ body: userAlreadyVerifiedData.body }, res);
+        db.users.findOne.mockResolvedValue(userAlreadyVerifiedData.db);
+        await userController.verify({ body: userAlreadyVerifiedData.body }, res);
 
         // Status code should be 400
         expect(res.status).toHaveBeenCalledWith(userAlreadyVerifiedData.res.code);
@@ -195,8 +195,8 @@ describe('testing owner cases', () => {
     test('test expired link', async () => {
         const { linkExpiredData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(linkExpiredData.db);
-        await ownerController.verify({ body: linkExpiredData.body }, res);
+        db.users.findOne.mockResolvedValue(linkExpiredData.db);
+        await userController.verify({ body: linkExpiredData.body }, res);
 
         // Status code should be 410
         expect(res.status).toHaveBeenCalledWith(linkExpiredData.res.code);
@@ -213,8 +213,8 @@ describe('testing owner cases', () => {
         const { verifyEmailData } = dummyData;
 
         verifyEmailData.db.save = jest.fn();
-        db.owners.findOne.mockResolvedValue(verifyEmailData.db);
-        await ownerController.verify({ body: verifyEmailData.body }, res);
+        db.users.findOne.mockResolvedValue(verifyEmailData.db);
+        await userController.verify({ body: verifyEmailData.body }, res);
 
         // Status code should be 200
         expect(res.status).toHaveBeenCalledWith(verifyEmailData.res.code);
@@ -234,8 +234,8 @@ describe('testing owner cases', () => {
     test('test not verified user', async () => {
         const { unverifiedData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(unverifiedData.db);
-        await ownerController.forget({ body: unverifiedData.body }, res);
+        db.users.findOne.mockResolvedValue(unverifiedData.db);
+        await userController.forget({ body: unverifiedData.body }, res);
 
         // Status code should be 403
         expect(res.status).toHaveBeenCalledWith(unverifiedData.res.code);
@@ -251,8 +251,8 @@ describe('testing owner cases', () => {
     test('test forgot password', async () => {
         const { forgotPasswordData } = dummyData;
 
-        db.owners.findOne.mockResolvedValue(forgotPasswordData.db);
-        await ownerController.forget({ body: forgotPasswordData.body }, res);
+        db.users.findOne.mockResolvedValue(forgotPasswordData.db);
+        await userController.forget({ body: forgotPasswordData.body }, res);
 
         // Status code should be 200
         expect(res.status).toHaveBeenCalledWith(forgotPasswordData.res.code);
@@ -270,8 +270,8 @@ describe('testing owner cases', () => {
         const { resetPasswordData } = dummyData;
 
         resetPasswordData.db.save = jest.fn();
-        db.owners.findOne.mockResolvedValue(resetPasswordData.db);
-        await ownerController.reset({ body: resetPasswordData.body }, res);
+        db.users.findOne.mockResolvedValue(resetPasswordData.db);
+        await userController.reset({ body: resetPasswordData.body }, res);
 
         // Status code should be 200
         expect(res.status).toHaveBeenCalledWith(resetPasswordData.res.code);

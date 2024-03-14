@@ -1,12 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import ownerModel from "../api/models/owner.model.js";
-import customerModel from "../api/models/customer.model.js";
-import hotelModel from "../api/models/hotel.model.js";
-import menuModel from "../api/models/menu.model.js";
-import tableModel from "../api/models/table.model.js";
-import orderModel from "../api/models/order.model.js";
-import paymentModel from "../api/models/payment.model.js";
-import notificationModel from "../api/models/notification.model.js";
+import userModel from "../api/models/user.model.js";
 import env from "./env.js";
 import { CustomError } from "../api/utils/common.js";
 
@@ -39,15 +32,7 @@ const createDatabase = async () => {
 // Define all database models
 const defineModels = (sequelize) => {
     db.Sequelize = Sequelize;
-    db.owners = ownerModel(sequelize, DataTypes);
-    db.customers = customerModel(sequelize, DataTypes);
-    db.hotels = hotelModel(sequelize, DataTypes);
-    db.menus = menuModel(sequelize, DataTypes);
-    db.tables = tableModel(sequelize, DataTypes);
-    db.orders = orderModel(sequelize, DataTypes);
-    db.payments = paymentModel(sequelize, DataTypes);
-    db.notifications = notificationModel(sequelize, DataTypes);
-    return;
+    db.users = userModel(sequelize, DataTypes);
 };
 
 const initDb = async () => {

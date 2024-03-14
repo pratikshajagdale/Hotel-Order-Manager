@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import CryptoJS from "crypto-js";
 import WelcomeImage from "../../assets/images/welcome.png";
 import env from '../../config/env';
-import { verify } from '../../services/owner.service';
+import { verify } from '../../services/user.service';
 import { toast } from 'react-toastify';
 import AuthContainer from '../../components/AuthContainer';
 
-function VerifyOwner() {
+function VerifyUser() {
     const [name, setName] = useState('');
     const navigate = useNavigate();
 
@@ -48,4 +48,4 @@ function VerifyOwner() {
     )
 };
 
-export default VerifyOwner;
+export default VerifyUser;

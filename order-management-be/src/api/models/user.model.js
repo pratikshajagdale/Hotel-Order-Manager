@@ -1,7 +1,8 @@
 export const status = [ 'ACTIVE', 'INACTIVE' ];
+export const roles = [ 'OWNER', 'ADMIN', 'CUSTOMER' ];
 
-const ownerModel = (sequelize, DataTypes) => (
-    sequelize.define("owner", {
+const userModel = (sequelize, DataTypes) => (
+    sequelize.define("user", {
         id: {
             type: DataTypes.STRING,
             primaryKey: true,
@@ -27,31 +28,17 @@ const ownerModel = (sequelize, DataTypes) => (
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        addressLine1: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        addressLine2: {
-            type: DataTypes.TEXT,
             allowNull: true
-        },
-        city: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        state: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        zipCode: {
-            type: DataTypes.TEXT,
-            allowNull: false
         },
         status: {
             type: DataTypes.ENUM,
-            values: status
+            values: status,
+            allowNull: false
+        },
+        role: {
+            type: DataTypes.ENUM,
+            values: roles,
+            allowNull: false,
         },
         deletedAt: {
             type: DataTypes.DATE,
@@ -60,4 +47,4 @@ const ownerModel = (sequelize, DataTypes) => (
     })
 )
 
-export default ownerModel;
+export default userModel;

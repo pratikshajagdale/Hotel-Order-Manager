@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import CryptoJS from "crypto-js";
 import { toast } from 'react-toastify';
 import { passwordSchema } from '../../validations/auth';
-import { resetPassword } from '../../services/owner.service';
+import { resetPassword } from '../../services/user.service';
 import env from '../../config/env';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
