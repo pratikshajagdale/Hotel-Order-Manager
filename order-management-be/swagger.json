@@ -11,9 +11,9 @@
 		}
 	],
 	"paths": {
-		"/owner/register": {
+		"/user/register": {
 			"post": {
-				"summary": "Register a new owner",
+				"summary": "Register a new user",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -44,25 +44,10 @@
 										"example": "U2FsdGVkX1+ILQ91VejAVpr/xiaq/Mf0XsHxR7fEKR4=",
 										"description": "Password@123"
 									},
-									"addressLine1": {
+									"role": {
 										"type": "string",
-										"example": "123 Street"
-									},
-									"addressLine2": {
-										"type": "string",
-										"example": "Apt 101"
-									},
-									"city": {
-										"type": "string",
-										"example": "New York"
-									},
-									"state": {
-										"type": "string",
-										"example": "NY"
-									},
-									"zipCode": {
-										"type": "number",
-										"example": 100010
+										"example": "OWNER",
+										"description": "Values could be OWNER, ADMIN, CUSTOMER"
 									}
 								}
 							}
@@ -78,13 +63,13 @@
 					}
 				},
 				"tags": [
-					"Owner"
+					"Users"
 				]
 			}
 		},
-		"/owner/login": {
+		"/user/login": {
 			"post": {
-				"summary": "Login as an owner",
+				"summary": "Login as an user",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -120,13 +105,13 @@
 					}
 				},
 				"tags": [
-					"Owner"
+					"Users"
 				]
 			}
 		},
-		"/owner/verify": {
+		"/user/verify": {
 			"post": {
-				"summary": "Verify owner account",
+				"summary": "Verify user account",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -161,11 +146,11 @@
 					}
 				},
 				"tags": [
-					"Owner"
+					"Users"
 				]
 			}
 		},
-		"/owner/forget": {
+		"/user/forget": {
 			"post": {
 				"summary": "Send password reset email",
 				"requestBody": {
@@ -197,13 +182,13 @@
 					}
 				},
 				"tags": [
-					"Owner"
+					"Users"
 				]
 			}
 		},
-		"/owner/reset": {
+		"/user/reset": {
 			"post": {
-				"summary": "Reset owner password",
+				"summary": "Reset user password",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -244,7 +229,7 @@
 					}
 				},
 				"tags": [
-					"Owner"
+					"Users"
 				]
 			}
 		}

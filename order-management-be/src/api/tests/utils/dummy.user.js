@@ -1,5 +1,5 @@
 import moment from "moment";
-import { status } from "../../models/owner.model";
+import { roles, status } from "../../models/user.model";
 import { STATUS_CODE } from "../../utils/common";
 
 const invalidEmailData = {
@@ -9,11 +9,6 @@ const invalidEmailData = {
         phoneNumber: 1234567890,
         email: 'test$test.vi', // invalid email
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=',
-        addressLine1: 'test',
-        addressLine2: 'test',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,
     },
     res: {
         code: STATUS_CODE.BAD_REQUEST,
@@ -28,11 +23,6 @@ const invalidPasswordData = {
         phoneNumber: 1234567890,
         email: 'test@test.com',
         password: 'U2FsdGVkX1+hsiMAdRRWOn8GAzrrRJSF/R4DTrRUxiM=', // inavlid password Test1234
-        addressLine1: 'test',
-        addressLine2: 'test',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,    
     },
     res : {
         code: STATUS_CODE.BAD_REQUEST,
@@ -47,11 +37,6 @@ const invalidPhoneData = {
         phoneNumber: 123456789, // invalid phone with 9 digits 
         email: 'test@test.com',
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=',
-        addressLine1: 'test',
-        addressLine2: 'test',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,
     },
     res: {
         code: STATUS_CODE.BAD_REQUEST,
@@ -64,9 +49,6 @@ const invalidData = {
         phoneNumber: 1234567890, 
         email: 'test@test.com',
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,
     },
     res: {
         code: STATUS_CODE.BAD_REQUEST,
@@ -74,18 +56,13 @@ const invalidData = {
     }
 };
 
-const owner = {
+const user = {
     body: {
         firstName: 'test',
         lastName: 'test',
         phoneNumber: 1234567890,
         email: 'test@test.com',
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=',
-        addressLine1: 'test',
-        addressLine2: 'test',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,
     },
     db: {
         id: '60c688d6-5442-4569-9c8c-3f973b3ba554',
@@ -93,11 +70,8 @@ const owner = {
         lastName: 'test',
         phoneNumber: 1234567890,
         email: 'test@test.com',
-        addressLine1: 'test',
-        addressLine2: 'test',
-        city: 'test',
-        state: 'test',
-        zipCode: 123456,
+        role: 'OWNER',
+        status: 'INACTIVE'
     },
     res: {
         code: STATUS_CODE.CREATED,
@@ -249,7 +223,7 @@ export default {
     invalidPasswordData,
     invalidPhoneData,
     invalidData,
-    owner,
+    user,
     unregisteredEmailData,
     incorrectPasswordData,
     inActiveData,

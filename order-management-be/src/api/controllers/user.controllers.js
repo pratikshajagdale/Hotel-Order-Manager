@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import { STATUS_CODE } from "../utils/common.js";
-import { loginValidation, passValidation, registrationValidation } from "../validations/owner.validations.js";
-import ownerService from "../services/owner.service.js";
+import { loginValidation, passValidation, registrationValidation } from "../validations/user.validations.js";
+import userService from "../services/user.service.js";
 import env from "../../config/env.js";
 
 const create = async (req, res) => {
@@ -10,15 +10,15 @@ const create = async (req, res) => {
 
         // decrypt and verify the password
         const depass = CryptoJS.AES.decrypt(body.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);     
-        const valid = registrationValidation({ ...body, password: depass, zipCode: body.zipCode.toString() });
+        const valid = registrationValidation({ ...body, password: depass });
         if (valid.error) {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
 
-        // register the owner with details
-        return res.status(STATUS_CODE.CREATED).send(await ownerService.create(body));
+        // register the user with details
+        return res.status(STATUS_CODE.CREATED).send(await userService.create(body));
     } catch (error) {
-        console.log(`Failed to register owner ${error}`);
+        console.log(`Failed to register user ${error}`);
         return res.status(error.code).send({ message: error.message });
     }
 }
@@ -33,7 +33,7 @@ const login = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
 
-        return res.status(STATUS_CODE.OK).send(await ownerService.login({ ...body, password: depass }));
+        return res.status(STATUS_CODE.OK).send(await userService.login({ ...body, password: depass }));
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -43,7 +43,7 @@ const login = async (req, res) => {
 const verify = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.OK).send(await ownerService.verify(body)); 
+        return res.status(STATUS_CODE.OK).send(await userService.verify(body)); 
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -53,7 +53,7 @@ const verify = async (req, res) => {
 const forget = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.OK).send(await ownerService.forget(body)); 
+        return res.status(STATUS_CODE.OK).send(await userService.forget(body)); 
     } catch (error) {
         console.log(`Failed to send forgot password email ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -68,7 +68,7 @@ const reset = async (req, res) => {
         if (valid.error) {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
-        return res.status(STATUS_CODE.OK).send(await ownerService.reset(body)); 
+        return res.status(STATUS_CODE.OK).send(await userService.reset(body)); 
     } catch (error) {
         console.log(`Failed to reset password ${error}`);
         return res.status(error.code).send({ message: error.message });
