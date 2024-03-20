@@ -1,5 +1,5 @@
 .view {
-    background: linear-gradient(135deg, #6a0572, #00c6ff);
+    background: linear-gradient(135deg, #49AC60, #08182D);
     font-family: Arial, sans-serif;
     background-size: 200% 135%;
     animation: gradientBG 10s ease infinite;
@@ -34,5 +34,5 @@
 }
 
 .custom-label {
-    color: #8154bd !important;
+    color: #08182D !important;
 }
