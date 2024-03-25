@@ -7,6 +7,7 @@ import ForgotPassword from '../pages/ForgetPassword';
 import VerifyUser from '../pages/VerifyUser';
 import ResetPassword from "../pages/ResetPassword";
 import Dashboard from "../pages/Dashboard";
+import Invites from '../pages/Invites';
 
 export default function Routes() {
     return (
@@ -22,6 +23,7 @@ export default function Routes() {
                 </Route>
                 <Route path="/" element={<AuthRoutes />}>
                     <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="invites" element={<Invites />} />
                 </Route>
                 <Route path="/404" element={<>Not Found</>} />
                 <Route path="*" element={<Navigate to="/404" />} />

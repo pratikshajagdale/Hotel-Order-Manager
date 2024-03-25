@@ -1,0 +1,25 @@
+.table-header {
+    background: linear-gradient(360deg, #49AC60, #08182D);
+    color: white;
+    box-shadow: 0px 4px 8px rgb(7 106 35 / 71%);
+    position: relative;
+}
+
+.table-border {
+    border: 1px solid #E8E8E8;
+}
+
+.table-footer {
+    background: linear-gradient(180deg, #49AC60, #08182D);
+    color: white;
+    box-shadow: 0px -4px 8px rgb(7 106 35 / 71%);
+    position: relative;
+}
+
+.pagination-goto {
+    max-width: 60px;
+}
+
+.pagination-btn {
+    width: 45px;
+}

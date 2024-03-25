@@ -65,7 +65,7 @@ const ResetPassword = () => {
                     <Form className='d-flex flex-column'>
                         <CustomFormGroup name='password' type='password' label='New Passwoord' />
                         <CustomFormGroup name='confirmPassword' type='password' label='Confirm Passwoord' />
-                        <CustomButton label='Reset' disabled={isSubmitting || !isValid || !dirty} type='submit' />
+                        <CustomButton label='Reset' disabled={isSubmitting || !isValid || !dirty} type='submit' className='mx-auto my-4'/>
                     </Form>
                 )}
             </Formik>
