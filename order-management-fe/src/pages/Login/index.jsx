@@ -56,7 +56,7 @@ function Login() {
 					<Form className='d-flex flex-column'>
 						<CustomFormGroup name='email' type='email' label='Email' />
 						<CustomFormGroup name='password' type='password' label='Password' />
-						<CustomButton label='Login' disabled={isSubmitting || !isValid || !dirty} type='submit' />
+						<CustomButton label='Login' disabled={isSubmitting || !isValid || !dirty} type='submit' className='mx-auto my-4'/>
 						<div className='text-center'>
 							<p className='label-font m-0'>Don't have an account ? <CustomLink onClick={handleOnClickSignup} text='Sign Up'/></p>
 							<p className='label-font m-0'><CustomLink text='Forgot your password ?' onClick={handleOnClickForgotPassword}/></p>

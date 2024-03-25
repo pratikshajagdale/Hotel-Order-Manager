@@ -34,7 +34,7 @@ function Signup() {
 
       await registerUser(payload);
       setSubmitting(false);
-      toast.success('User registered successfully');
+      toast.success('User registered successfully. Please verify your email');
       navigate('/');
     } catch (err) {
       setSubmitting(false);
@@ -69,7 +69,7 @@ function Signup() {
               <Col><CustomFormGroup name='password' type='password' label='Password' /></Col>
               <Col><CustomFormGroup name='confirmPassword' type='password' label='Confirm Password' /></Col>
             </Row>
-            <CustomButton type='submit' disabled={isSubmitting || !isValid || !dirty} label='Submit' />
+            <CustomButton type='submit' disabled={isSubmitting || !isValid || !dirty} label='Submit' className='mx-auto my-4'/>
             <div className='text-center mx-3'>
               <p className='label-font m-0'>Already have an account ? <CustomLink text='Login' onClick={handleOnClickLogin} /></p>
             </div>

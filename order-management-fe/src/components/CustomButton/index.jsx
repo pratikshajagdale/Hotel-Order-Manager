@@ -3,13 +3,14 @@ import { Button } from "react-bootstrap";
 function CustomButton({
     disabled = true,
     label = '',
-    type = 'button'
+    type = 'button',
+    className = ''
 }) {
     return (
         <Button
             disabled={disabled}
             type={type}
-            className='custom-button btn-block mx-auto my-4 px-4'
+            className={`custom-button btn-block px-4 ${className}`}
         >{label}</Button>
     )
 }

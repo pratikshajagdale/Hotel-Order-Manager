@@ -42,7 +42,7 @@ const ForgotPassword = () => {
                 {({ isSubmitting, dirty, isValid }) => (
                     <Form className='d-flex flex-column'>
                         <CustomFormGroup name='email' type='email' label='Email' />
-                        <CustomButton label='Send Email' type='submit' disabled={isSubmitting || !isValid || !dirty} />
+                        <CustomButton label='Send Email' type='submit' disabled={isSubmitting || !isValid || !dirty} className='mx-auto my-4'/>
                         <div className='text-center'>
                             <p className='label-font m-0'>Already have an account ? <CustomLink onClick={handleOnClickLogin} text='Login'/></p>
                         </div>
