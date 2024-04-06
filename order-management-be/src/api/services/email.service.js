@@ -4,41 +4,50 @@ import { transporter } from "../../config/email.js"
 import env from "../../config/env.js";
 import { EMAIL_ACTIONS, CustomError } from "../utils/common.js";
 
-const getEmailData = ( action ) => {
-    let path = '', template = '';
+const getEmailData = ( action, payload ) => {
+    let path = '', template = '', url = '';
     switch (action) {
         case EMAIL_ACTIONS.VERIFY_USER:
             path = `${process.cwd()}/src/api/templates/verifyEmail.html`;
             template = readFileSync(path, 'utf8');
+            url = `${env.app.appUrl}/verify?token=${encodeURIComponent(payload.token)}`;
+
             return {
-                url: `${env.app.appUrl}/verify`,
                 subject: 'Re: Email Verification',
-                template: template
+                template: Mustache.render(template, { appUrl: url })
             }
         case EMAIL_ACTIONS.FORGOT_PASSWORD:
             path = `${process.cwd()}/src/api/templates/forgotPassword.html`;
             template = readFileSync(path, 'utf8');
+            url = `${env.app.appUrl}/reset?token=${encodeURIComponent(payload.token)}`;
+
             return {
-                url: `${env.app.appUrl}/reset`,
                 subject: 'Re: Recover Password',
-                template: template
+                template: Mustache.render(template, { appUrl: url })
+            }
+        case EMAIL_ACTIONS.INVITE_ADMIN:
+            path = `${process.cwd()}/src/api/templates/inviteAdmin.html`;
+            template = readFileSync(path, 'utf8');
+            url = `${env.app.appUrl}/signup?token=${encodeURIComponent(payload.token)}`;
+
+            return {
+                subject: 'Re: Invite Admin',
+                template: Mustache.render(template, { appUrl: url, ownerName: payload.name })
             }
         default:
             break;
     }
 }
 
-export const sendEmail = async ( token, to, action ) => {
+export const sendEmail = async ( payload, to, action ) => {
     try {
         // create the email data
-        const data = getEmailData(action);
-        const url = `${data.url}?token=${encodeURIComponent(token)}`;
-
+        const data = getEmailData(action, payload);
         let options = {
             from: env.email.user,
             to: to,
             subject: data.subject,
-            html: Mustache.render(data.template, { appUrl: url })
+            html: data.template 
         };
     
         // send email to the user

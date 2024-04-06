@@ -1,12 +1,14 @@
-export const status = [ 'ACTIVE', 'INACTIVE' ];
-export const roles = [ 'OWNER', 'ADMIN', 'CUSTOMER' ];
+import { DataTypes } from 'sequelize';
+import { TABLES } from '../utils/common.js';
 
-const userModel = (sequelize, DataTypes) => (
-    sequelize.define("user", {
+export const USER_STATUS = ['ACTIVE', 'INACTIVE'];
+export const USER_ROLES = ['OWNER', 'ADMIN', 'CUSTOMER'];
+
+const userModel = (sequelize) => (
+    sequelize.define(TABLES.USERS, {
         id: {
             type: DataTypes.STRING,
             primaryKey: true,
-            unique: true
         },
         firstName: {
             type: DataTypes.STRING,
@@ -32,12 +34,12 @@ const userModel = (sequelize, DataTypes) => (
         },
         status: {
             type: DataTypes.ENUM,
-            values: status,
+            values: USER_STATUS,
             allowNull: false
         },
         role: {
             type: DataTypes.ENUM,
-            values: roles,
+            values: USER_ROLES,
             allowNull: false,
         },
         deletedAt: {
@@ -45,6 +47,6 @@ const userModel = (sequelize, DataTypes) => (
             allowNull: true
         }
     })
-)
+);
 
 export default userModel;

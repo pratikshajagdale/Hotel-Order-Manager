@@ -13,8 +13,15 @@ export const STATUS_CODE = {
 
 export const EMAIL_ACTIONS = {
     VERIFY_USER: 'verify-user',
-    FORGOT_PASSWORD: 'forgot-password'
+    FORGOT_PASSWORD: 'forgot-password',
+    INVITE_ADMIN: 'invite-admin'
 }
+
+export const TABLES = {
+    USERS: 'users',
+    INVITE: 'invites'
+}
+
 
 export const CustomError = (
     code = STATUS_CODE.INTERNAL_SERVER_ERROR,

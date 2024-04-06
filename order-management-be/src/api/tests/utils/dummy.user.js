@@ -1,6 +1,6 @@
 import moment from "moment";
-import { roles, status } from "../../models/user.model";
-import { STATUS_CODE } from "../../utils/common";
+import { USER_STATUS } from "../../models/user.model.js";
+import { STATUS_CODE } from "../../utils/common.js";
 
 const invalidEmailData = {
     body: {
@@ -112,7 +112,7 @@ const inActiveData = {
     db : {
         email: 'valid-email@test.com',
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=', // Test@1234
-        status: status[1]
+        status: USER_STATUS[1]
     },
     res: {
         code: STATUS_CODE.FORBIDDEN,
@@ -128,7 +128,7 @@ const successLoginData = {
     db : {
         email: 'valid-email@test.com',
         password: 'U2FsdGVkX1/M/nm/UED5QUvoaIEZMa5p9y7ePJ0r8ik=', // Test@1234
-        status: status[0]
+        status: USER_STATUS[0]
     },
     res: {
         code: STATUS_CODE.OK,
@@ -141,7 +141,7 @@ const userAlreadyVerifiedData = {
         email: 'valid-test@test.com',
     },
     db: {
-        status: status[0]
+        status: USER_STATUS[0]
     },
     res: {
         code: STATUS_CODE.BAD_REQUEST,
@@ -155,7 +155,7 @@ const linkExpiredData = {
         expires: moment().subtract(1, 'hour').valueOf()
     },
     db: {
-        status: status[1]
+        status: USER_STATUS[1]
     },
     res: {
         code: STATUS_CODE.GONE,
@@ -169,11 +169,11 @@ const verifyEmailData = {
         expires: moment().add(1, 'hour').valueOf()
     },
     db: {
-        status: status[1]
+        status: USER_STATUS[1]
     },
     res: {
         code: STATUS_CODE.OK,
-        data: { status: status[0] }
+        data: { status: USER_STATUS[0] }
     }
 }
 
@@ -182,7 +182,7 @@ const unverifiedData = {
         email: 'valid-email@test.com'
     },
     db: {
-        status: status[1]
+        status: USER_STATUS[1]
     },
     res: {
         code: STATUS_CODE.FORBIDDEN,
@@ -195,7 +195,7 @@ const forgotPasswordData = {
         email: 'valid-email@test.com'
     },
     db: {
-        status: status[0]
+        status: USER_STATUS[0]
     },
     res: {
         code: STATUS_CODE.OK,

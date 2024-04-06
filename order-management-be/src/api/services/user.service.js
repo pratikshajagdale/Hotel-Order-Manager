@@ -2,14 +2,21 @@ import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 import userRepo from "../repositories/user.repository.js";
-import { roles, status } from "../models/user.model.js";
+import inviteRepo from "../repositories/invite.repository.js";
+import { USER_ROLES, USER_STATUS } from "../models/user.model.js";
 import { sendEmail } from "./email.service.js";
 import env from '../../config/env.js';
 import moment from 'moment';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
+import { INVITE_STATUS } from '../models/invite.model.js';
 
-const create = async ( payload ) => {
+const create = async (payload) => {
     try {
+        // check if invited user
+        if (payload.invite) {
+            await inviteRepo.update({ id: payload.inviteId }, { status: INVITE_STATUS[1] });
+        }
+
         // create payload of user data
         const user = {
             id: uuidv4(),
@@ -18,11 +25,11 @@ const create = async ( payload ) => {
             phoneNumber: payload.phoneNumber,
             email: payload.email,
             password: payload.password,
-            status: status[1],
-            role: roles[0]
+            status: USER_STATUS[1],
+            role: payload.invite ? USER_ROLES[1] : USER_ROLES[0]
         }
         // save the user details to the database
-        const data = await userRepo.save( user );
+        const data = await userRepo.save(user);
         // send verification email to the user
         const verifyOptions = {
             email: user.email,
@@ -31,14 +38,14 @@ const create = async ( payload ) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
-        await sendEmail(token, user.email, EMAIL_ACTIONS.VERIFY_USER);
+        await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;
     } catch (error) {
         throw CustomError(error.code, error.message);
     }
 }
 
-const login = async ( payload ) => {
+const login = async (payload) => {
     try {
         const { email, password } = payload;
         const user = await userRepo.findOne({ email });
@@ -47,11 +54,11 @@ const login = async ( payload ) => {
         }
 
         const pass = CryptoJS.AES.decrypt(user.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
-        if( password !== pass ) {
+        if (password !== pass) {
             throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
 
-        if ( user.status === status[1] ) {
+        if (user.status === USER_STATUS[1]) {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
@@ -66,7 +73,7 @@ const login = async ( payload ) => {
     }
 }
 
-const verify = async ( payload ) => {   
+const verify = async (payload) => {
     try {
         const { email, expires } = payload;
         const user = await userRepo.findOne({ email });
@@ -74,7 +81,7 @@ const verify = async ( payload ) => {
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
         }
 
-        if (user.status === status[0]) {
+        if (user.status === USER_STATUS[0]) {
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
         }
 
@@ -85,11 +92,11 @@ const verify = async ( payload ) => {
                 expires: moment().add(1, 'hour').valueOf(),
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
-            await sendEmail(token, user.email, EMAIL_ACTIONS.VERIFY_USER);
+            await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
             throw CustomError(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
-        user.status = status[0];
+        user.status = USER_STATUS[0];
         await user.save();
 
         const { id, firstName, lastName } = user;
@@ -103,16 +110,16 @@ const verify = async ( payload ) => {
     }
 }
 
-const forget = async ( payload ) => {
+const forget = async (payload) => {
     try {
         const { email } = payload;
-        
+
         const user = await userRepo.findOne({ email });
-        if( !user ) {
+        if (!user) {
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
         }
 
-        if (user.status === status[1]) {
+        if (user.status === USER_STATUS[1]) {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
         // send verification email to the user
@@ -122,14 +129,14 @@ const forget = async ( payload ) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
-        await sendEmail(token, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
+        await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
         return { message: 'Recover password link sent. Please check your email.' }
     } catch (error) {
         throw CustomError(error.code, error.message);
     }
 }
 
-const reset = async ( payload ) => {
+const reset = async (payload) => {
     try {
         const { email, newPassword, expires } = payload;
         const user = await userRepo.findOne({ email });
@@ -137,7 +144,7 @@ const reset = async ( payload ) => {
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid request');
         }
 
-        if (user.status === status[1]) {
+        if (user.status === USER_STATUS[1]) {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
 
@@ -148,7 +155,7 @@ const reset = async ( payload ) => {
                 expires: moment().add(1, 'hour').valueOf(),
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
-            await sendEmail(token, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
+            await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
             throw CustomError(STATUS_CODE.GONE, `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`);
         }
 
@@ -160,4 +167,80 @@ const reset = async ( payload ) => {
     }
 }
 
-export default { create, login, verify, forget, reset };
+const invite = async (payload) => {
+    try {
+        const { email } = payload;
+        const data = {
+            id: uuidv4(),
+            email: payload.email,
+            status: INVITE_STATUS[0],
+            ownerId: payload.owner
+        }
+        // save the invite details to the database
+        const inviteData = await inviteRepo.save(data);
+
+        const options = {
+            email,
+            inviteId: inviteData.id,
+            expires: moment().add(1, 'hour').valueOf()
+        };
+
+        const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
+        await sendEmail({ token, name: payload.name }, email, EMAIL_ACTIONS.INVITE_ADMIN);
+        return { message: 'Invite link sent' };
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
+const listInvites = async (payload) => {
+    try {
+        const { owner, limit, skip, page } = payload;
+        const options = {
+            where: {
+                ownerId: owner,
+            },
+            offset: Number(page * skip),
+            limit: Number(limit)
+        }
+        return await inviteRepo.find(options);
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
+const removeInvite = async (id) => {
+    try {
+        const data = await inviteRepo.find({ where: { id } });
+        if (!data.rows.length) {
+            await inviteRepo.remove({ where: { id } });
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Invited user not found');
+        }
+
+        if (data.rows[0].status === INVITE_STATUS[1]) {
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invited user is active');
+        }
+
+        const options = {
+            where: {
+                id,
+                status: INVITE_STATUS[0]
+            }
+        }
+        await inviteRepo.remove(options);
+        return { message: 'Invite deleted successfully' };
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
+export default {
+    create,
+    login,
+    verify,
+    forget,
+    reset,
+    invite,
+    listInvites,
+    removeInvite
+};

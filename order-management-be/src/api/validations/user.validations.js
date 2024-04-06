@@ -32,6 +32,19 @@ export const loginValidation = (payload) => {
     }
 }
 
+export const emailValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        });
+    
+        return schema.validate(payload);   
+    } catch (error) {
+        console.log(`Error in email validation ${error.message}`);
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export const passValidation = (payload) => {
     try {
         const schema = Joi.object({
@@ -40,7 +53,7 @@ export const passValidation = (payload) => {
     
         return schema.validate(payload);   
     } catch (error) {
-        console.log(`Error in validation login details ${error.message}`);
+        console.log(`Error in password validation ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 }

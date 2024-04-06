@@ -1,7 +1,9 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 import userModel from "../api/models/user.model.js";
-import env from "./env.js";
+import inviteModel from "../api/models/invite.model.js";
+import defineAssociations from "../api/models/associations.js";
 import { CustomError } from "../api/utils/common.js";
+import env from "./env.js";
 
 const config = {
     host: env.db.host,
@@ -32,7 +34,8 @@ const createDatabase = async () => {
 // Define all database models
 const defineModels = (sequelize) => {
     db.Sequelize = Sequelize;
-    db.users = userModel(sequelize, DataTypes);
+    db.users = userModel(sequelize);
+    db.invites = inviteModel(sequelize);
 };
 
 const initDb = async () => {
@@ -42,7 +45,7 @@ const initDb = async () => {
 
         // Define and associate models
         defineModels(sequelize);
-
+        defineAssociations(db);
         // Sync models with database
         await sequelize.sync({ force: false });
         console.log("🔄 Database synchronized successfully");
