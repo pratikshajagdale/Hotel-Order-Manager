@@ -9,6 +9,7 @@ import env from '../../config/env.js';
 import moment from 'moment';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
+import { Op } from 'sequelize';
 
 const create = async (payload) => {
     try {
@@ -195,7 +196,7 @@ const invite = async (payload) => {
 
 const listInvites = async (payload) => {
     try {
-        const { owner, limit, skip, sort_key, sort_order } = payload;
+        const { owner, limit, skip, sort_key, sort_order, filter_key, filter_value } = payload;
         const defaults = {
             sort_key: 'updatedAt',
             sort_order: 'DESC',
@@ -203,8 +204,20 @@ const listInvites = async (payload) => {
             offset: 0
         }
 
+        let where = { ownerId: owner };
+        if (filter_key && filter_value) {
+            where = {
+                [Op.and]: [
+                    { ownerId: owner },
+                    { [filter_key]: {
+                        [Op.like]: `%${filter_value}%`
+                    }}
+                ]
+            }
+        }
+
         const options = {
-            where: { ownerId: owner },
+            where,
             order: [[ (sort_key || defaults.sort_key), (sort_order || defaults.sort_order) ]],
             offset: Number(skip) || defaults.offset,
             limit: Number(limit) || defaults.limit
