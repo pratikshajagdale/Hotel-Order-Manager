@@ -9,8 +9,16 @@ export const inviteUser = async ( payload ) => {
     }
 }
 
-export const list = async ( query ) => {
+export const list = async (
+    skip=0,
+    limit=10,
+    sort_key='',
+    sort_order='',
+    filter_key='',
+    filter_value=''
+) => {
     try {
+        const query = `skip=${skip}&limit=${limit}&sort_key=${sort_key}&sort_order=${sort_order}&filter_key=${filter_key}&filter_value=${filter_value}`;
         return await api(method.GET, `/user/invite?${query}`)
     } catch (error) {
         console.error(`Error to fetch invite list ${error}`);

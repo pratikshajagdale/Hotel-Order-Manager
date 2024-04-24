@@ -1,5 +1,5 @@
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FaCaretRight, FaCaretLeft } from "react-icons/fa6";
 import { PiCaretDoubleRightFill, PiCaretDoubleLeftFill } from "react-icons/pi";
@@ -20,15 +20,21 @@ function Table({
     onSortingChange,
     sorting,
     onFilterChange,
-    filtering = {}
+    filtering
 }) {
     const pageCount = Math.ceil(count / pagination.pageSize);
+    if( !filtering ) {
+        filtering = {}
+    } else if( filtering && Object.keys(filtering).length === 0 ) {
+        filtering =  { field: 'id', value: '' };  
+    }
+
     const filterInputRefs = useRef({});
     useEffect(() => {
         if (filtering.field && filtering.value) {
-            filterInputRefs.current[filtering.field].focus();
+            filterInputRefs.current[filtering.field]?.focus();
         }
-    }, [filtering.field, filtering.value]);
+    });    
 
     const filledData = [...data];
     const dataLength = filledData.length;
@@ -41,7 +47,7 @@ function Table({
     const options = {
         columns,
         data: filledData,
-        debugTable: true,
+        // debugTable: true,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
         onPaginationChange,

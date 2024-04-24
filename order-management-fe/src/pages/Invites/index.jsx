@@ -11,23 +11,27 @@ import moment from "moment";
 function Invites() {
     const [email, setEmail] = useState('');
     const [inviteData, setInviteData] = useState({ count: 0, rows: [] });
-    const [sorting, setSorting] = useState([]);
 
-    /**** table pagination start ****/
+    /**** sorting state ****/
+    const [sorting, setSorting] = useState([]);
+    
+    /**** filtering state ****/
+    const [filtering, setFiltering] = useState({});
+
+    /**** pagination state ****/
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10,
     });
 
+    /**** table pagination start ****/
     const onPaginationChange = (e) => {
         setPagination(e);
     }
 
     useEffect(() => {
-        const { pageIndex, pageSize } = pagination;
-        const startIndex = pageIndex * pageSize;
-        getInvites(startIndex, pageSize)
-    }, [pagination]);
+        getInvites();
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value]);
     /**** table pagination end ****/
 
     /**** table sorting start ****/
@@ -35,29 +39,42 @@ function Invites() {
         const sortDetails = e()[0];
         const data = [...sorting][0];
         if (!data || data.id !== sortDetails.id) {
-            getInvites(0, pagination.pageSize, sortDetails.id, 'desc');
             setSorting([{ id: sortDetails.id, desc: false }]);
             return;
         }
 
-        getInvites(0, pagination.pageSize, sortDetails.id, data.desc ? 'desc' : 'asc');
         setSorting([{ ...data, desc: !data.desc }]);
     }
     /**** table sorting end ****/
 
-    const getInvites = async (skip = 0, limit = 10, sort_key='', sort_order='') => {
+    /**** table filtering start ****/
+    const onFilterChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+ 
+        setFiltering({
+            field: name,
+            value: value
+        })
+    }
+   /**** table filtering emd ****/
+
+    const getInvites = async () => {
         try {
-            const query = `skip=${skip}&limit=${limit}&sort_key=${sort_key}&sort_order=${sort_order}`;
-            const res = await list(query);
+            const params = {
+                skip: pagination?.pageIndex ? ( pagination?.pageIndex * pagination?.pageSize ) : undefined,
+                limit: pagination?.pageSize,
+                sort_key: sorting[0]?.id,
+                sort_order: sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
+                filter_key: filtering?.field,
+                filter_value: filtering?.value
+            }    
+            const res = await list(params.skip, params.limit, params.sort_key, params.sort_order, params.filter_key, params.filter_value);
             setInviteData(res);
         } catch (error) {
             toast.error(`Failed to invite user: ${error.message}`);
         }
     }
-
-    useEffect(() => {
-        getInvites();
-    }, [])
 
     const handleSend = async () => {
         try {
@@ -144,6 +161,10 @@ function Invites() {
                     // sorting props
                     onSortingChange={onSortingChange}
                     sorting={sorting}
+
+                    // filtering props
+                    onFilterChange={onFilterChange}
+                    filtering={filtering}
                 />
             </div>
         </>
