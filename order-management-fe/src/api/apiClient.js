@@ -43,7 +43,7 @@ export const api = async ( method, path, body ) => {
                 res = await instance.put(path, body);
                 break;
             case 'delete':
-                res = await instance.delete(path);
+                res = await instance.delete(path, { data: body });
                 break;
             default:
                 throw new Error('Invalid Method');

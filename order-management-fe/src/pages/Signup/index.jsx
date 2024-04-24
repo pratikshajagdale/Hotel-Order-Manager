@@ -24,7 +24,7 @@ function Signup() {
 
   const navigate = useNavigate();
   
-  const [ invite, setInvite ] = useState({ status: false, email: '', owner: '' });
+  const [ invite, setInvite ] = useState({ status: false, email: '', id: '' });
   useEffect(() => {
     (async () => {
       try {
@@ -34,12 +34,12 @@ function Signup() {
 
           const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
           const keys = Object.keys(data);
-          if (keys.length === 3 && keys.includes('email') && keys.includes('owner') && keys.includes('expires')) {
+          if (keys.length === 3 && keys.includes('email') && keys.includes('inviteId') && keys.includes('expires')) {
             setInitialValues(prevValues => ({
               ...prevValues,
               email: data.email
             }));
-            setInvite({ status: true, email: data.email, owner: data.owner });
+            setInvite({ status: true, email: data.email, id: data.inviteId });
           }
       } catch (err) {
           toast.error(`Failed to validate invite: ${err.message}`);
@@ -56,8 +56,7 @@ function Signup() {
       delete payload.confirmPassword;
 
       if( invite.status ) {
-        payload.invite = true;
-        payload.inviteId = invite.inviteId;
+        payload.invite = invite.id;
       }
 
       await registerUser(payload);

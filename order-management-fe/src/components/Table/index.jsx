@@ -38,7 +38,7 @@ function Table({
 
     const filledData = [...data];
     const dataLength = filledData.length;
-    if (dataLength < pagination.pageSize) {
+    if (dataLength < pagination?.pageSize) {
         for (let i = 0; i < pagination.pageSize - dataLength; i++) {
             filledData.push({});
         }
@@ -160,13 +160,10 @@ function Table({
             </div>
         </div>
     )
-    
-    if( !data.length ) {
-        return ( <NoData /> )
-    }
 
     return (
         <>
+            { !data.length ? <NoData /> : <></> }
             <table className="w-100">
                 <thead className="table-header">
                     {table.getHeaderGroups().map((headerGroup) => {

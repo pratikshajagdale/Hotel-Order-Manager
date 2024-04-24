@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { emailRegex } from "../../validations/auth";
-import { inviteUser, list } from "../../services/invite.service";
+import { inviteUser, list, remove } from "../../services/invite.service";
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import "../../assets/styles/invite.css";
 import Table from "../../components/Table";
 import { createColumnHelper } from "@tanstack/react-table";
 import moment from "moment";
+import OTMModal from "../../components/Modal";
 
 function Invites() {
     const [email, setEmail] = useState('');
+    const [change, setChange] = useState(false);
+    const [removeInvite, setRemoveInvite] = useState(false);
     const [inviteData, setInviteData] = useState({ count: 0, rows: [] });
 
     /**** sorting state ****/
@@ -31,7 +34,7 @@ function Invites() {
 
     useEffect(() => {
         getInvites();
-    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value]);
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, change]);
     /**** table pagination end ****/
 
     /**** table sorting start ****/
@@ -79,9 +82,22 @@ function Invites() {
     const handleSend = async () => {
         try {
             await inviteUser({ email });
+            setChange(!change);
             toast.success('User invited successfully');
         } catch (error) {
             toast.error(`Failed to invite user: ${error.message}`);
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            const payload = { id: removeInvite }
+            await remove(payload);
+            setChange(!change);
+            setRemoveInvite(false);
+            toast.success('Invite record deleted successfully');
+        } catch (error) {
+            toast.error(`Failed to delete invite record: ${error.message}`);
         }
     }
 
@@ -123,6 +139,7 @@ function Invites() {
                     <Button
                         style={{ background: '#49AC60', border: 'none' }}
                         disabled={row.original.status === 'ACCEPTED'}
+                        onClick={() => { setRemoveInvite(row.original.id) }}
                     >Delete</Button> : <></>
             },
         })
@@ -167,6 +184,15 @@ function Invites() {
                     filtering={filtering}
                 />
             </div>
+            <OTMModal
+                show={removeInvite}
+                closeText={'Cancel'}
+                submitText={'Delete'}
+                title={'Delete Invite'}
+                description={'Are you sure you want to delete the Invite? This action cannot be undone.'}
+                handleClose={setRemoveInvite}
+                handleSubmit={handleDelete}
+            />
         </>
     )
 }

@@ -25,3 +25,12 @@ export const list = async (
         throw error;
     }
 }
+
+export const remove = async (payload) => {
+    try {
+        return await api(method.DELETE, `/user/invite`, payload );
+    } catch (error) {
+        console.error(`Error in deleting invite ${error}`);
+        throw error;
+    }
+}
