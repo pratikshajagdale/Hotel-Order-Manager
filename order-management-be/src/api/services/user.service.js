@@ -195,12 +195,15 @@ const invite = async (payload) => {
 
 const listInvites = async (payload) => {
     try {
-        const { owner, limit, skip, page } = payload;
+        const { owner, limit, skip} = payload;
+        
+        const orderBy = [[ 'updatedAt', 'DESC' ]]
         const options = {
             where: {
                 ownerId: owner,
             },
-            offset: Number(page * skip),
+            order: orderBy,
+            offset: Number(skip),
             limit: Number(limit)
         }
         return await inviteRepo.find(options);

@@ -94,12 +94,11 @@ const invite = async (req, res) => {
 const listInvites = async (req, res) => {
     try {
         const { query } = req;
-        const { limit, skip, page } = query;
+        const { limit, skip } = query;
 
         const payload = {
             limit,
             skip,
-            page,
             owner: req.user.id
         }
         return res.status(STATUS_CODE.OK).send(await userService.listInvites(payload));
