@@ -5,12 +5,13 @@ function CustomFormGroup({
     name = '',
     type = 'text',
     label = '',
-    className = 'mt-2'
+    className = 'mt-2',
+    disabled=false,
 }) {
     return (
         <FormGroup className={className}>
             {label && <FormLabel htmlFor={name} className='small text-muted m-0'>{label}</FormLabel>}
-            <Field data-testid={`${name}-input-${new Date().getTime()}`} type={type} name={name} className='form-control' />
+            <Field data-testid={`${name}-input-${new Date().getTime()}`} type={type} name={name} className='form-control' disabled={disabled} />
             <ErrorMessage data-testid={`${name}-error-${new Date().getTime()}`} name={name} component='div' className='text-danger error-message' />
         </FormGroup>
     )

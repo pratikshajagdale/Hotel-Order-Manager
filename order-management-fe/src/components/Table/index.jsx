@@ -6,18 +6,23 @@ import { PiCaretDoubleRightFill, PiCaretDoubleLeftFill } from "react-icons/pi";
 import "../../assets/styles/table.css";
 import NoData from "../NoData";
 
+const defaultPagination = {
+    pageIndex: 0,
+    pageSize: 10,
+}
+
 function Table({
     data = [],
     columns = [],
     onPaginationChange,
-    pageCount,
-    pagination,
+    count,
+    pagination = defaultPagination,
     onSortingChange,
     sorting,
     onFilterChange,
     filtering = {}
 }) {
-
+    const pageCount = Math.ceil(count / pagination.pageSize);
     const filterInputRefs = useRef({});
     useEffect(() => {
         if (filtering.field && filtering.value) {
@@ -25,9 +30,17 @@ function Table({
         }
     }, [filtering.field, filtering.value]);
 
+    const filledData = [...data];
+    const dataLength = filledData.length;
+    if (dataLength < pagination.pageSize) {
+        for (let i = 0; i < pagination.pageSize - dataLength; i++) {
+            filledData.push({});
+        }
+    }
+
     const options = {
         columns,
-        data,
+        data: filledData,
         debugTable: true,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
@@ -166,7 +179,7 @@ function Table({
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id}>
+                        <tr key={row.id} style={{ height: '50px' }}>
                             {row.getVisibleCells().map((cell) => {
                                 return (
                                     <td
