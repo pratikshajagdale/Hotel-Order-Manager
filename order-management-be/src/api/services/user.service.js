@@ -195,16 +195,19 @@ const invite = async (payload) => {
 
 const listInvites = async (payload) => {
     try {
-        const { owner, limit, skip} = payload;
-        
-        const orderBy = [[ 'updatedAt', 'DESC' ]]
+        const { owner, limit, skip, sort_key, sort_order } = payload;
+        const defaults = {
+            sort_key: 'updatedAt',
+            sort_order: 'DESC',
+            limit: 10,
+            offset: 0
+        }
+
         const options = {
-            where: {
-                ownerId: owner,
-            },
-            order: orderBy,
-            offset: Number(skip),
-            limit: Number(limit)
+            where: { ownerId: owner },
+            order: [[ (sort_key || defaults.sort_key), (sort_order || defaults.sort_order) ]],
+            offset: Number(skip) || defaults.offset,
+            limit: Number(limit) || defaults.limit
         }
         return await inviteRepo.find(options);
     } catch (error) {
