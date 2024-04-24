@@ -11,8 +11,9 @@ import moment from "moment";
 function Invites() {
     const [email, setEmail] = useState('');
     const [inviteData, setInviteData] = useState({ count: 0, rows: [] });
+    const [sorting, setSorting] = useState([]);
 
-    // Pagination of the invite table
+    /**** table pagination start ****/
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10,
@@ -27,12 +28,27 @@ function Invites() {
         const startIndex = pageIndex * pageSize;
         getInvites(startIndex, pageSize)
     }, [pagination]);
+    /**** table pagination end ****/
 
-    const getInvites = async (skip = 0, limit = 10) => {
+    /**** table sorting start ****/
+    const onSortingChange = (e) => {
+        const sortDetails = e()[0];
+        const data = [...sorting][0];
+        if (!data || data.id !== sortDetails.id) {
+            getInvites(0, pagination.pageSize, sortDetails.id, 'desc');
+            setSorting([{ id: sortDetails.id, desc: false }]);
+            return;
+        }
+
+        getInvites(0, pagination.pageSize, sortDetails.id, data.desc ? 'desc' : 'asc');
+        setSorting([{ ...data, desc: !data.desc }]);
+    }
+    /**** table sorting end ****/
+
+    const getInvites = async (skip = 0, limit = 10, sort_key='', sort_order='') => {
         try {
-            const query = `skip=${skip}&limit=${limit}`;
+            const query = `skip=${skip}&limit=${limit}&sort_key=${sort_key}&sort_order=${sort_order}`;
             const res = await list(query);
-            console.log(res);
             setInviteData(res);
         } catch (error) {
             toast.error(`Failed to invite user: ${error.message}`);
@@ -70,7 +86,7 @@ function Invites() {
             cell: props => <div>{props.row.original.email}</div>,
         }),
         columnHelper.display({
-            id: 'created',
+            id: 'createdAt',
             header: 'Invited',
             cell: ({ row }) => {
                 return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>
@@ -84,6 +100,7 @@ function Invites() {
         columnHelper.display({
             id: 'actions',
             header: 'Actions',
+            enableSorting: 'FALSE',
             cell: ({ row }) => {
                 return row.original.status ?
                     <Button
@@ -119,9 +136,14 @@ function Invites() {
                     columns={columns}
                     data={inviteData.rows}
                     count={inviteData.count}
-                    // Pagination properties
+
+                    // pagination props
                     onPaginationChange={onPaginationChange}
                     pagination={pagination}
+
+                    // sorting props
+                    onSortingChange={onSortingChange}
+                    sorting={sorting}
                 />
             </div>
         </>

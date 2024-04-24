@@ -59,7 +59,10 @@ function Table({
 
     const ThComponent = ({ header }) => (
         <>
-            <div onClick={header.column.toggleSorting} >
+            <div onClick={(e) => {
+                if(header.column.columnDef.enableSorting === 'FALSE') return; 
+                return header.column.toggleSorting(e)
+            }} >
                 {!header.isPlaceholder &&
                     flexRender(
                         header.column.columnDef.header,
