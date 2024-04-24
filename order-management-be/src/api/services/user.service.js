@@ -15,7 +15,7 @@ const create = async (payload) => {
     try {
         // check if invited user
         if (payload.invite) {
-            await inviteRepo.update({ id: payload.inviteId }, { status: INVITE_STATUS[1] });
+            await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1] });
         }
 
         // create payload of user data

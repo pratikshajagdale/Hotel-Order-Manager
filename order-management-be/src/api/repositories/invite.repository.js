@@ -13,7 +13,7 @@ const save = async (payload) => {
 
 const update = async (options, data) => {
     try {
-        return await db.invites.update(data, options);
+        return await db.invites.update(data, { where: options});
     } catch (error) {
         const err = error?.errors[0]?.message;
         throw CustomError(error.code, (err || error.message));
