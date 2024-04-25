@@ -9,6 +9,7 @@ export const registrationValidation = ( payload ) => {
             phoneNumber: Joi.number().min(10 ** 9).max(10 ** 10 - 1).required(),
             email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
             password: Joi.string().pattern(new RegExp(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)),
+            invite: Joi.string().optional()
         });
     
         return schema.validate(payload);   
@@ -32,6 +33,19 @@ export const loginValidation = (payload) => {
     }
 }
 
+export const emailValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        });
+    
+        return schema.validate(payload);   
+    } catch (error) {
+        console.log(`Error in email validation ${error.message}`);
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export const passValidation = (payload) => {
     try {
         const schema = Joi.object({
@@ -40,7 +54,7 @@ export const passValidation = (payload) => {
     
         return schema.validate(payload);   
     } catch (error) {
-        console.log(`Error in validation login details ${error.message}`);
+        console.log(`Error in password validation ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 }

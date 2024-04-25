@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const emailRegex = /^[^\s@]+@(?:[^\s@]+\.(?:com|net))$/;
+export const emailRegex = /^[^\s@]+@(?:[^\s@]+\.(?:com|net))$/;
 export const userRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().min(3).max(30).required('First Name is required'),
     lastName: Yup.string().min(3).max(30).required('Last Name is required'),

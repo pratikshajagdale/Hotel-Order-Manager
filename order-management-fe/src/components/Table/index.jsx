@@ -1,34 +1,53 @@
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FaCaretRight, FaCaretLeft } from "react-icons/fa6";
 import { PiCaretDoubleRightFill, PiCaretDoubleLeftFill } from "react-icons/pi";
 import "../../assets/styles/table.css";
 import NoData from "../NoData";
 
+const defaultPagination = {
+    pageIndex: 0,
+    pageSize: 10,
+}
+
 function Table({
     data = [],
     columns = [],
     onPaginationChange,
-    pageCount,
-    pagination,
+    count,
+    pagination = defaultPagination,
     onSortingChange,
     sorting,
     onFilterChange,
-    filtering = {}
+    filtering
 }) {
+    const pageCount = Math.ceil(count / pagination.pageSize);
+    if( !filtering ) {
+        filtering = {}
+    } else if( filtering && Object.keys(filtering).length === 0 ) {
+        filtering =  { field: 'id', value: '' };  
+    }
 
     const filterInputRefs = useRef({});
     useEffect(() => {
         if (filtering.field && filtering.value) {
-            filterInputRefs.current[filtering.field].focus();
+            filterInputRefs.current[filtering.field]?.focus();
         }
-    }, [filtering.field, filtering.value]);
+    });    
+
+    const filledData = [...data];
+    const dataLength = filledData.length;
+    if (dataLength < pagination?.pageSize) {
+        for (let i = 0; i < pagination.pageSize - dataLength; i++) {
+            filledData.push({});
+        }
+    }
 
     const options = {
         columns,
-        data,
-        debugTable: true,
+        data: filledData,
+        // debugTable: true,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
         onPaginationChange,
@@ -46,7 +65,10 @@ function Table({
 
     const ThComponent = ({ header }) => (
         <>
-            <div onClick={header.column.toggleSorting} >
+            <div onClick={(e) => {
+                if(header.column.columnDef.enableSorting === 'FALSE') return; 
+                return header.column.toggleSorting(e)
+            }} >
                 {!header.isPlaceholder &&
                     flexRender(
                         header.column.columnDef.header,
@@ -138,13 +160,10 @@ function Table({
             </div>
         </div>
     )
-    
-    if( !data.length ) {
-        return ( <NoData /> )
-    }
 
     return (
         <>
+            { !data.length ? <NoData /> : <></> }
             <table className="w-100">
                 <thead className="table-header">
                     {table.getHeaderGroups().map((headerGroup) => {
@@ -166,7 +185,7 @@ function Table({
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id}>
+                        <tr key={row.id} className="table-row">
                             {row.getVisibleCells().map((cell) => {
                                 return (
                                     <td

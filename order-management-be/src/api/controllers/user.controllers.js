@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
 import { STATUS_CODE } from "../utils/common.js";
-import { loginValidation, passValidation, registrationValidation } from "../validations/user.validations.js";
+import { emailValidation, loginValidation, passValidation, registrationValidation } from "../validations/user.validations.js";
 import userService from "../services/user.service.js";
 import env from "../../config/env.js";
 
@@ -75,4 +75,60 @@ const reset = async (req, res) => {
     }
 }
 
-export default { create, login, verify, forget, reset };
+const invite = async (req, res) => {
+    try {
+        const { body } = req;
+        const valid = emailValidation(body);
+        if (valid.error) {
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
+        }
+
+        const data = { ...body, owner: req.user.id, name: `${req.user.firstName} ${req.user.lastName}` }
+        return res.status(STATUS_CODE.OK).send(await userService.invite(data)); 
+    } catch (error) {
+        console.log(`Failed to invite ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
+const listInvites = async (req, res) => {
+    try {
+        const { query } = req;
+        const { limit, skip, sort_key, sort_order, filter_key, filter_value } = query;
+
+        const payload = {
+            limit,
+            skip,
+            sort_key,
+            sort_order,
+            filter_key,
+            filter_value,
+            owner: req.user.id
+        }
+        return res.status(STATUS_CODE.OK).send(await userService.listInvites(payload));
+    } catch (error) {
+        console.log(`Failed to get invite list ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
+const removeInvite = async (req, res) => {
+    try {
+        const id = req.body.id;
+        return res.status(STATUS_CODE.OK).send(await userService.removeInvite(id));
+    } catch (error) {
+        console.log(`Failed to remove invite ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
+export default {
+    create,
+    login,
+    verify,
+    forget,
+    reset,
+    invite,
+    listInvites,
+    removeInvite
+};
