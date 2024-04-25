@@ -185,7 +185,7 @@ function Table({
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} style={{ height: '50px' }}>
+                        <tr key={row.id} className="table-row">
                             {row.getVisibleCells().map((cell) => {
                                 return (
                                     <td

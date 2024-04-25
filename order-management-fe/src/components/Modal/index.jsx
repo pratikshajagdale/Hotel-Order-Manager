@@ -18,13 +18,15 @@ function OTMModal({
             <Modal.Footer>
                 {
                     closeText &&
-                    <Button style={{ background: 'black', border: 'none' }} onClick={() => { handleClose(false) }}>
+                    <Button
+                        className="secondary-button"
+                        onClick={() => { handleClose(false) }}>
                         {closeText}
                     </Button>
                 }
                 {
                     submitText &&
-                    <Button style={{  }} className="custom-button" onClick={handleSubmit}>
+                    <Button className="custom-button" onClick={handleSubmit}>
                         {submitText}
                     </Button>
                 }

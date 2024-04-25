@@ -23,3 +23,14 @@
 .pagination-btn {
     width: 45px;
 }
+
+.no-data {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 50px;
+}
+
+.table-row {
+    height: 50px; 
+}
