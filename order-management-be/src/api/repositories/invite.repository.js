@@ -6,7 +6,7 @@ const save = async (payload) => {
         return await db.invites.create(payload);   
     } catch (error) {
         console.log(error);
-        const err = error?.errors[0]?.message;
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
         throw CustomError(error.code, (err || error.message));
     }
 }
@@ -15,7 +15,7 @@ const update = async (options, data) => {
     try {
         return await db.invites.update(data, { where: options});
     } catch (error) {
-        const err = error?.errors[0]?.message;
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
         throw CustomError(error.code, (err || error.message));
     }
 }
@@ -25,7 +25,7 @@ const find = async (options) => {
         return await db.invites.findAndCountAll(options);
     } catch (error) {
         console.log(error);
-        const err = error?.errors[0]?.message;
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
         throw CustomError(error.code, (err || error.message));
     }
 }
@@ -35,7 +35,7 @@ const remove = async (options) => {
         return await db.invites.destroy(options);
     } catch (error) {
         console.log(error);
-        const err = error?.errors[0]?.message;
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
         throw CustomError(error.code, (err || error.message));
     }
 }
