@@ -59,6 +59,6 @@ export const failRegistration = {
 export const successfulRegistration = {
     values: { ...formDetails },
     submitText: 'Submit',
-    toastMessage: 'User registered successfully',
+    toastMessage: 'User registered successfully. Please verify your email',
     path: '/'
 }

@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import { act } from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 
-import ResetPassword from "../../pages/ResetPassword";
-import { invalidToken, notFoundRedirection, validToken, token, invalidCredentials, passwordTestIdRegex, confirmPasswordTestIdRegex, apiFailure, apiSuccess } from "../utils/dummy.resetPassword";
-import * as apiClient from '../../api/apiClient.js'
+import ResetPassword from "../../../pages/ResetPassword/index.jsx";
+import { invalidToken, notFoundRedirection, validToken, token, invalidCredentials, passwordTestIdRegex, confirmPasswordTestIdRegex, apiFailure, apiSuccess } from "../../utils/pages/dummy.resetPassword.js";
+import * as apiClient from '../../../api/apiClient.js'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

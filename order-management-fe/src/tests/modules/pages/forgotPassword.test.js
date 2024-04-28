@@ -3,9 +3,9 @@ import { act } from "react-dom/test-utils";
 import userEvent from "@testing-library/user-event";
 import { toast } from "react-toastify";
 import RouterDom from "react-router-dom";
-import ForgotPassword from "../../pages/ForgetPassword";
-import * as apiClient from "../../api/apiClient.js";
-import { emailTestIdRegex, failedRequest, requiredFields, successRequest, validateCredentials } from "../utils/dummy.forgotPassword";
+import ForgotPassword from "../../../pages/ForgetPassword/index.jsx";
+import * as apiClient from "../../../api/apiClient.js";
+import { emailTestIdRegex, failedRequest, requiredFields, successRequest, validateCredentials } from "../../utils/pages/dummy.forgotPassword.js";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
