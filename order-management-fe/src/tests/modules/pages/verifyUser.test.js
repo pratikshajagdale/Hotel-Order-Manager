@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import VerifyUser from "../../pages/VerifyUser";
+import VerifyUser from "../../../pages/VerifyUser/index.jsx";
 import RouterDom from "react-router-dom";
-import { apiFailure, apiResponse, apiSuccess, invalidToken, notFoundRedirection, validToken } from "../utils/dummy.verifyUser.js";
+import { apiFailure, apiResponse, apiSuccess, invalidToken, notFoundRedirection, validToken } from "../../utils/pages/dummy.verifyUser.js";
 import { toast } from "react-toastify";
-import * as apiClient from "../../api/apiClient.js";
+import * as apiClient from "../../../api/apiClient.js";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

@@ -153,6 +153,7 @@ function Invites() {
                 </div>
                 <div className="position-absolute top-100 start-50 translate-middle email-container">
                     <input
+                        data-testid="invite-email-id"
                         type="text"
                         placeholder="test@test.com"
                         className="py-3 px-5 border-0 email-input"
