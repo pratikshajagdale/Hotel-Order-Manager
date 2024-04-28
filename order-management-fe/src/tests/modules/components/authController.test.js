@@ -3,6 +3,7 @@ import AuthContainer from "../../../components/AuthContainer";
 import { Children, description, title } from "../../utils/components/dummy.authController";
 
 describe('test auth controller component', () => {
+    // Test rendering of component
     test('test rendering of component', async () => {
         await act(async () => {
             render(
