@@ -6,7 +6,7 @@ function CustomFormGroup({
     type = 'text',
     label = '',
     className = 'mt-2',
-    disabled=false,
+    disabled = false,
 }) {
     return (
         <FormGroup className={className}>
