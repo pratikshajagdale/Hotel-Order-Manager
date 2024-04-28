@@ -10,7 +10,7 @@ import "../../assets/styles/sidebar.css";
 
 function Sidebar() {
     const [active, setActive] = useState(0);
-    const [compress, setCompress] = useState(true);
+    const [compress, setCompress] = useState(false);
     const navigate = useNavigate();
 
     const tabs = [
@@ -59,7 +59,7 @@ function Sidebar() {
 
     return (
         <>
-            <div className={`otm-sidebar ${compress ? 'compressed-sidebar' : 'full-sidebar'}`}>
+            <div data-testid="sidebar-testId" className={`otm-sidebar ${compress ? 'compressed-sidebar' : 'full-sidebar'}`}>
                 <div className={`d-flex my-4 align-items-center ${compress ? 'flex-column' : 'flex-row'}`}>
                     <div className={`d-flex align-items-center justify-content-center w-100 ${compress ? 'order-2' : 'order-1'}`}>
                         <img src={Logo} height={60} className={compress ? 'mt-2' : 'm-0'} />
@@ -72,11 +72,13 @@ function Sidebar() {
                         {
                             compress ?
                                 <IoMdArrowRoundForward
+                                    data-testid="arrow-forward"
                                     size={20}
                                     color="white"
                                     className="m-auto"
                                 /> :
                                 <IoMdArrowRoundBack
+                                    data-testid="arrow-back"
                                     size={20}
                                     color="white"
                                     className="m-auto"
@@ -92,6 +94,7 @@ function Sidebar() {
                             return (
                                 <li
                                     key={`${title}-${id}`}
+                                    data-testid={`test-${id}`}
                                     onClick={() => handleClick(item)}
                                     className={`d-flex align-items-center container ${id === active && 'active'}`}
                                 >
