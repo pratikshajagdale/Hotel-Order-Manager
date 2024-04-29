@@ -83,8 +83,10 @@ function Table({
                 <input
                     type="text"
                     className="w-75 form-control mx-auto"
+                    data-testid={`filter-input-${header.column.columnDef.id}`}
                     name={header.id}
                     value={filtering.field === header.id ? filtering.value : ''}
+                    disabled={header.column.columnDef.enableFiltering === 'FALSE'}
                     onChange={(e) => { onFilterChange(e) }}
                     ref={r => filterInputRefs.current[header.id] = r}
                 />
@@ -108,6 +110,7 @@ function Table({
             </div>
             <div className="d-flex align-items-center">
                 <button
+                    data-testid='first-page'
                     className="border rounded p-1 mx-1 pagination-btn"
                     onClick={() => table.firstPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -115,6 +118,7 @@ function Table({
                     <PiCaretDoubleLeftFill size={15} color="#49AC60" />
                 </button>
                 <button
+                    data-testid='prev-page'
                     className="border rounded p-1 mx-1 pagination-btn"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -123,12 +127,13 @@ function Table({
                 </button>
                 <div className="mx-2">
                     <span>Page</span>{"  "}
-                    <strong>
+                    <strong data-testid='page-count'>
                         {table.getState().pagination.pageIndex + 1} of{' '}
                         {table.getPageCount().toLocaleString()}
                     </strong>
                 </div>
                 <button
+                    data-testid='next-page'
                     className="border rounded p-1 mx-1 pagination-btn"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
@@ -136,6 +141,7 @@ function Table({
                     <FaCaretRight size={15} color="#49AC60" />
                 </button>
                 <button
+                    data-testid='last-page'
                     className="border rounded p-1 mx-1 pagination-btn"
                     onClick={() => table.lastPage()}
                     disabled={!table.getCanNextPage()}
