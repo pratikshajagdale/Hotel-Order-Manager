@@ -17,12 +17,20 @@ function Navbars() {
     return (
         <Navbar className="py-1 navbar-container">
             <Nav className="ms-auto d-flex align-items-center">
-                <div className='notification-bell'>
-                    <div className='notification-text'>{ notifications }</div>
-                    <FaBell color='white' size={25}/>
+                <div data-testid='notification-bell-icon' className='notification-bell'>
+                    <div className='notification-text'>{notifications}</div>
+                    <FaBell color='white' size={25} />
                 </div>
-                <NavDropdown key={1}
-                    title={ <img className="p-1 bg-warning user-logo" src={User} alt="user pic" /> }
+                <NavDropdown
+                    key={1}
+                    data-testid='navbar-options'
+                    title={
+                        <img
+                            data-testid='navbar-user'
+                            className="p-1 bg-warning user-logo"
+                            src={User}
+                            alt="user pic"
+                        />}
                     drop='down-start'
                     className="hide-dropdown-arrow mx-3 p-0"
                 >
