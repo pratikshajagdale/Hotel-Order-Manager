@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FcPlus } from "react-icons/fc";
 import OTMModal from "../../components/Modal";
 import { toast } from "react-toastify";
 import { hotelRegistrationSchema } from "./hotelSchema";
+import { componentKey, setDemoState } from "./HotelSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Hotels() {
     const [createHotelModal, setCreateHotelModal] = useState(false);
+    const { demoState } = useSelector((state) => state[componentKey]);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setDemoState("hello hotel component=="));
+    }, []);
+    useEffect(() => {
+        console.log("demoState==", demoState);
+    }, [demoState]);
+
     const initialValues = {
         hotelName: "",
         openTime: "",
