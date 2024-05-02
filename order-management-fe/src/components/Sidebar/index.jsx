@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack, IoMdSettings, IoMdArrowRoundForward } from "react-icons/io";
 import { MdOutlineDashboardCustomize, MdOutlineRestaurantMenu, MdOutlineAttachMoney } from "react-icons/md";
-import { FcInvite } from "react-icons/fc";
+import { FcInvite, FcMoneyTransfer } from "react-icons/fc";
 import { PiArmchairFill } from "react-icons/pi";
 
 import Logo from "../../assets/images/omt.png";
@@ -43,6 +43,12 @@ function Sidebar() {
             Icon: FcInvite,
             title: 'Invites',
             path: '/invites'
+        },
+        {
+            id: "hotels",
+            Icon: FcMoneyTransfer,
+            title: "Hotels",
+            path: "/hotels",
         },
         { 
             id: 'settings',
