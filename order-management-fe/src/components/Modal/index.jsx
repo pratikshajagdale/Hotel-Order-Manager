@@ -2,6 +2,7 @@ import { Form, Formik } from "formik";
 import { Button, Modal } from "react-bootstrap";
 import CustomFormGroup from "../CustomFormGroup";
 import CustomButton from "../CustomButton";
+import { getKey } from "../../libs/common";
 
 function OTMModal({
     title,
@@ -16,6 +17,44 @@ function OTMModal({
     initialValues = {},
     validationSchema = "",
 }) {
+    const FormComponent = ({ description }) => (
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize={true}>
+            {({ isSubmitting, isValid, dirty }) => (
+                <Form className="d-flex flex-column">
+                    <div className="row mb-4">
+                        {Object.entries(description).map(([key, property]) => {
+                            return (
+                                <CustomFormGroup
+                                    key={getKey(key)}
+                                    className={property.className}
+                                    name={property.name}
+                                    type={property.type}
+                                    label={property.label}
+                                />
+                            );
+                        })}
+                    </div>
+                    <ModalFooter disabled={isSubmitting || !isValid || !dirty} />
+                </Form>
+            )}
+        </Formik>
+    );
+
+    const ModalFooter = ({ disabled=false }) => (
+        <Modal.Footer>
+            {closeText && (
+                <CustomButton
+                    className="secondary-button"
+                    onClick={() => {
+                        handleClose(false);
+                    }}
+                    label={closeText}
+                />
+            )}
+            {submitText && <CustomButton type="submit" className="custom-button" onClick={handleSubmit} disabled={disabled} label={submitText} />}
+        </Modal.Footer>
+    );
+
     return (
         <Modal
             show={show}
@@ -27,47 +66,8 @@ function OTMModal({
             <Modal.Header closeButton>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                {typeof description === "string" ? (
-                    description
-                ) : (
-                    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize={true}>
-                        {({ isSubmitting, isValid, dirty }) => (
-                            <Form className="d-flex flex-column">
-                                <div className="row">
-                                    {Object.entries(description).map(([key, property]) => {
-                                        return (
-                                            <div key={key} className={property.className}>
-                                                <CustomFormGroup name={property.name} type={property.type} label={property.label} />
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                <CustomButton type="submit" disabled={isSubmitting || !isValid || !dirty} label="Submit" className="ms-auto my-4" />
-                            </Form>
-                        )}
-                    </Formik>
-                )}
-            </Modal.Body>
-            {isFooter && (
-                <Modal.Footer>
-                    {closeText && (
-                        <Button
-                            className="secondary-button"
-                            onClick={() => {
-                                handleClose(false);
-                            }}
-                        >
-                            {closeText}
-                        </Button>
-                    )}
-                    {submitText && (
-                        <Button className="custom-button" onClick={handleSubmit}>
-                            {submitText}
-                        </Button>
-                    )}
-                </Modal.Footer>
-            )}
+            <Modal.Body>{typeof description === "string" ? description : <FormComponent description={description} />}</Modal.Body>
+            {isFooter && <ModalFooter />}
         </Modal>
     );
 }
