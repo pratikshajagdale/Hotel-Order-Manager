@@ -4,15 +4,17 @@ import { Form, Formik } from 'formik';
 import CryptoJS from "crypto-js";
 import { toast } from 'react-toastify';
 import { passwordSchema } from '../../validations/auth';
-import { resetPassword } from '../../services/user.service';
 import env from '../../config/env';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
+import { useDispatch } from 'react-redux';
+import { resetPassword } from './ResetPasswordSaga';
 
 const ResetPassword = () => {
     const [data, setData] = useState('');
     const navigate = useNavigate();
+    const dispatch=useDispatch();
     const initialValues = {
         password: '',
         confirmPassword: ''
@@ -43,10 +45,8 @@ const ResetPassword = () => {
         try {
             setSubmitting(true);
             const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-            await resetPassword({ newPassword: enpass, ...data });
-            toast.success('Password reset successfully');
+            dispatch(resetPassword({ newPassword: enpass, ...data ,navigate}))
             setSubmitting(false);
-            navigate('/');
         } catch (err) {
             setSubmitting(false);
             toast.error(`Failed to send: ${err.message}`);

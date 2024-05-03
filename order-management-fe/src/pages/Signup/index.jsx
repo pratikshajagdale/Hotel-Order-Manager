@@ -6,11 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { userRegistrationSchema } from '../../validations/auth';
 import env from '../../config/env';
-import { registerUser } from '../../services/user.service';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../components/CustomLink';
+import { useDispatch } from 'react-redux';
+import { registerUser } from './SignupSaga';
 
 function Signup() {
   const [initialValues, setInitialValues] = useState({
@@ -23,6 +24,7 @@ function Signup() {
   });
 
   const navigate = useNavigate();
+  const dispatch =useDispatch();
   
   const [ invite, setInvite ] = useState({ status: false, email: '', id: '' });
   useEffect(() => {
@@ -58,11 +60,9 @@ function Signup() {
       if( invite.status ) {
         payload.invite = invite.id;
       }
-
-      await registerUser(payload);
+      dispatch(registerUser({payload,navigate}));
       setSubmitting(false);
-      toast.success('User registered successfully. Please verify your email');
-      navigate('/');
+     
     } catch (err) {
       setSubmitting(false);
       toast.error(`Failed to register user: ${err.message}`);
