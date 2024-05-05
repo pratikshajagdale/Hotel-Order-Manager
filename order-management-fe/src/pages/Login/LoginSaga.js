@@ -19,11 +19,9 @@ function* loginUserAsync(action) {
     try {
         yield put(setLoadingState({ state: PAGE_STATE.LOADING, message: "Loading" }));
         const res = yield UserServices.login(payload);
-        if (res.status) {
             localStorage.setItem("token", res.token);
             toast.success("Login successfully");
             navigate("/dashboard");
-        }
     } catch (error) {
         console.log("err: ", error);
     }
