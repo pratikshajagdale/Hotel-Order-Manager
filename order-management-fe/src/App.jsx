@@ -3,10 +3,14 @@ import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/styles/auth.css';
 import './assets/styles/button.css';
+import Loader from './components/Loader';
+import { useSelector } from 'react-redux';
 
 function App() {
+    const { isLoading } = useSelector((state) => state.loader);
     return (
         <>
+            {isLoading && <Loader />}
             <Routes />
             <ToastContainer
                 position="top-right"

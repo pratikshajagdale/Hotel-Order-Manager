@@ -9,7 +9,14 @@ export const inviteUser = async (payload) => {
     }
 };
 
-export const list = async (skip = 0, limit = 10, sortKey = '', sortOrder = '', filterKey = '', filterValue = '') => {
+export const listUser = async ({
+    skip = 0,
+    limit = 10,
+    sortKey = '',
+    sortOrder = '',
+    filterKey = '',
+    filterValue = ''
+}) => {
     try {
         const query = `skip=${skip}&limit=${limit}&sortKey=${sortKey}&sortOrder=${sortOrder}&filterKey=${filterKey}&filterValue=${filterValue}`;
         return await api(method.GET, `/user/invite?${query}`);
@@ -19,7 +26,7 @@ export const list = async (skip = 0, limit = 10, sortKey = '', sortOrder = '', f
     }
 };
 
-export const remove = async (id) => {
+export const removeUser = async (id) => {
     try {
         return await api(method.DELETE, `/user/invite/${id}`);
     } catch (error) {

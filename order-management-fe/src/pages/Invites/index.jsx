@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
 import { emailRegex } from '../../validations/auth';
-import { inviteUser, list, remove } from '../../services/invite.service';
 import { Button } from 'react-bootstrap';
-import { toast } from 'react-toastify';
 import '../../assets/styles/invite.css';
 import Table from '../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
 import moment from 'moment';
 import OTMModal from '../../components/Modal';
+import { useDispatch } from 'react-redux';
+import {
+    inviteUserRequest,
+    listInviteRequest,
+    removeInviteRequest,
+    setEmail,
+    setRemoveInvite,
+    setSelectedInvite
+} from '../../store/reducers/invite.slice';
+import { useSelector } from 'react-redux';
 
 function Invites() {
-    const [email, setEmail] = useState('');
-    const [change, setChange] = useState(false);
-    const [removeInvite, setRemoveInvite] = useState(false);
-    const [inviteData, setInviteData] = useState({ count: 0, rows: [] });
+    const dispatch = useDispatch();
+    const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite);
 
     /**** sorting state ****/
     const [sorting, setSorting] = useState([]);
@@ -63,48 +69,27 @@ function Invites() {
     /**** table filtering emd ****/
 
     const getInvites = async () => {
-        try {
-            const params = {
-                skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
-                limit: pagination?.pageSize,
-                sortKey: sorting[0]?.id,
-                sortOrder: sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
-                filterKey: filtering?.field,
-                filterValue: filtering?.value
-            };
-            const res = await list(
-                params.skip,
-                params.limit,
-                params.sortKey,
-                params.sortOrder,
-                params.filterKey,
-                params.filterValue
-            );
-            setInviteData(res);
-        } catch (error) {
-            toast.error(`Failed to invite user: ${error.message}`);
-        }
+        if (inviteData?.rows?.length > 0) return;
+        const params = {
+            skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
+            limit: pagination?.pageSize,
+            sortKey: sorting[0]?.id,
+            sortOrder: sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
+            filterKey: filtering?.field,
+            filterValue: filtering?.value
+        };
+        dispatch(listInviteRequest(params));
     };
 
-    const handleSend = async () => {
-        try {
-            await inviteUser({ email });
-            setChange(!change);
-            toast.success('User invited successfully');
-        } catch (error) {
-            toast.error(`Failed to invite user: ${error.message}`);
-        }
+    const handleSend = () => {
+        dispatch(inviteUserRequest({ email }));
     };
 
-    const handleDelete = async () => {
-        try {
-            await remove(removeInvite);
-            setChange(!change);
-            setRemoveInvite(false);
-            toast.success('Invite record deleted successfully');
-        } catch (error) {
-            toast.error(`Failed to delete invite record: ${error.message}`);
-        }
+    const handleClose = () => {
+        dispatch(setRemoveInvite());
+    };
+    const handleDelete = () => {
+        dispatch(removeInviteRequest(selectedInvite));
     };
 
     const columnHelper = createColumnHelper();
@@ -147,7 +132,8 @@ function Invites() {
                         style={{ background: '#49AC60', border: 'none' }}
                         disabled={row.original.status === 'ACCEPTED'}
                         onClick={() => {
-                            setRemoveInvite(row.original.id);
+                            dispatch(setSelectedInvite(row.original.id));
+                            handleClose();
                         }}
                     >
                         Delete
@@ -172,7 +158,7 @@ function Invites() {
                         placeholder="test@test.com"
                         className="py-3 px-5 border-0 email-input"
                         onChange={(e) => {
-                            setEmail(e.target.value);
+                            dispatch(setEmail(e.target.value));
                         }}
                     />
                     <button
@@ -203,13 +189,13 @@ function Invites() {
                 />
             </div>
             <OTMModal
-                show={removeInvite}
+                show={isRemoveInvite}
                 size="md"
                 closeText={'Cancel'}
                 submitText={'Delete'}
                 title={'Delete Invite'}
                 description={'Are you sure you want to delete the Invite? This action cannot be undone.'}
-                handleClose={setRemoveInvite}
+                handleClose={handleClose}
                 handleSubmit={handleDelete}
             />
         </>

@@ -163,7 +163,7 @@ const listInvites = async (req, res) => {
 
 const removeInvite = async (req, res) => {
     try {
-        const id = req.body.id;
+        const id = req.params.id;
         logger('debug', 'Received request to remove invite with ID:', { id });
 
         const result = await userService.removeInvite(id);
