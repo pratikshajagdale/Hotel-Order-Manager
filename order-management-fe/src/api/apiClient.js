@@ -1,5 +1,7 @@
 import axios from 'axios';
 import env from '../config/env';
+import store from '../store';
+import { setIsLoading } from '../store/reducers/loader.slice';
 
 const instance = axios.create({
     baseURL: env.baseUrl,
@@ -11,6 +13,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
+        store.dispatch(setIsLoading(true));
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -18,7 +21,18 @@ instance.interceptors.request.use(
         return config;
     },
     (error) => {
+        store.dispatch(setIsLoading(false));
         return Promise.reject(error);
+    }
+);
+instance.interceptors.response.use(
+    (response) => {
+        store.dispatch(setIsLoading(false));
+        return response;
+    },
+    (error) => {
+        store.dispatch(setIsLoading(false));
+        throw error;
     }
 );
 
