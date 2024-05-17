@@ -1,5 +1,5 @@
 import { Form, Formik } from 'formik';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import CustomFormGroup from '../CustomFormGroup';
 import CustomButton from '../CustomButton';
 
