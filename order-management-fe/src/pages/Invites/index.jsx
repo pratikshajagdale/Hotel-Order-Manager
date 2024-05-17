@@ -13,7 +13,7 @@ import {
     setEmail,
     setRemoveInvite,
     setSelectedInvite
-} from '../../store/reducers/invite.slice';
+} from '../../store/slice/invite.slice';
 import { useSelector } from 'react-redux';
 import ActionDropdown from '../../components/ActionDropdown';
 
@@ -69,7 +69,6 @@ function Invites() {
     /**** table filtering emd ****/
 
     const getInvites = async () => {
-        if (inviteData?.rows?.length > 0) return;
         const params = {
             skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
             limit: pagination?.pageSize,

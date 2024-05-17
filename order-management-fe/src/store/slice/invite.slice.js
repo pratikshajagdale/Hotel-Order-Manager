@@ -22,7 +22,6 @@ export const inviteSlice = createSlice({
         removeUserSuccess: (state) => {
             state.change = !state.change;
             state.isRemoveInvite = false;
-            state.inviteData.rows = state.inviteData.rows?.filter((row) => row?.id !== state.selectedInvite);
         },
         setSelectedInvite: (state, action) => {
             state.selectedInvite = action.payload;

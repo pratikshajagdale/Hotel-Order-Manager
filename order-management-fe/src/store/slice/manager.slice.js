@@ -1,19 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { MANAGER } from '../types';
 
 const managerSlice = createSlice({
-    name: MANAGER,
-    initialState: {
-        data: {}
-    },
+    name: 'MANAGER',
     reducers: {
-        getManagers() {},
-        getManagerSuccess(state, action) {
-            state.data = action.payload;
+        setUpdateManagerModal: (state) => {
+            state.updateManagerModal = !state.updateManagerModal;
+        },
+        setSelectedRow: (state, action) => {
+            state.selectedRow = action.payload;
+        },
+        setIsRemoveManager: (state) => {
+            state.isRemoveManager = !state.isRemoveManager;
         }
+    },
+    initialState: {
+        updateManagerModal: false,
+        selectedRow: {},
+        isRemoveManager: false
     }
 });
 
-export const { getManagers, getManagerSuccess } = managerSlice.actions;
-
+export const { setUpdateManagerModal, setSelectedRow, setIsRemoveManager } = managerSlice.actions;
 export const managerReducer = managerSlice.reducer;
