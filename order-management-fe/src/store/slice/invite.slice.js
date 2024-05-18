@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { INVITE } from '../types';
 
-export const inviteSlice = createSlice({
+const inviteSlice = createSlice({
     name: INVITE,
     reducers: {
         setEmail: (state, action) => {
@@ -46,3 +46,5 @@ export const {
     setRemoveInvite,
     setSelectedInvite
 } = inviteSlice.actions;
+
+export const inviteReducer = inviteSlice.reducer;

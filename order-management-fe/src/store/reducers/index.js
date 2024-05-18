@@ -1,12 +1,11 @@
-import { authReducer, managerReducer } from '../slice';
-import { inviteSlice } from '../slice/invite.slice';
-import { loaderSlice } from '../slice/loader.slice';
+import { authReducer, hotelReducer, inviteReducer, loaderReducer, managerReducer } from '../slice';
 
 const rootReducers = {
-    loader: loaderSlice.reducer,
+    loader: loaderReducer,
     users: authReducer,
-    invite: inviteSlice?.reducer,
-    manager: managerReducer
+    invite: inviteReducer,
+    manager: managerReducer,
+    hotel: hotelReducer
 };
 
 export default rootReducers;
