@@ -1,37 +1,37 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-export const INVITE_STATUS = ['PENDING', 'ACCEPTED'];
-
-const inviteModel = (sequelize) =>
+const menuModel = (sequelize) =>
     sequelize.define(
-        TABLES.INVITE,
+        TABLES.MENU,
         {
             id: {
                 type: DataTypes.STRING,
                 primaryKey: true
             },
-            email: {
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            categoryId: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                unique: true
-            },
-            status: {
-                type: DataTypes.ENUM,
-                values: INVITE_STATUS,
-                allowNull: false
-            },
-            ownerId: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            userId: {
-                type: DataTypes.STRING,
-                allowNull: true,
                 references: {
-                    model: TABLES.USERS,
+                    model: TABLES.CATEGORIES,
                     key: 'id'
                 }
+            },
+            hotelId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: TABLES.HOTEL,
+                    key: 'id'
+                }
+            },
+            price: {
+                type: DataTypes.FLOAT,
+                allowNull: false
             },
             deletedAt: {
                 type: DataTypes.DATE,
@@ -43,4 +43,4 @@ const inviteModel = (sequelize) =>
         }
     );
 
-export default inviteModel;
+export default menuModel;

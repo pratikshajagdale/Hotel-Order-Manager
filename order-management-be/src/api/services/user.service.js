@@ -14,12 +14,6 @@ import { sendEmail } from './email.service.js';
 
 const create = async (payload) => {
     try {
-        // check if invited user
-        if (payload.invite) {
-            logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
-            await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1] });
-        }
-
         // create payload of user data
         const user = {
             id: uuidv4(),
@@ -31,9 +25,16 @@ const create = async (payload) => {
             status: USER_STATUS[1],
             role: payload.invite ? USER_ROLES[1] : USER_ROLES[0]
         };
+
         // save the user details to the database
         const data = await userRepo.save(user);
         logger('info', 'User details saved successfully:', data);
+
+        // check if invited user
+        if (payload.invite) {
+            logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
+            await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1], userId: user.id });
+        }
 
         // send verification email to the user
         logger('debug', 'Sending verification email to the user');
@@ -57,7 +58,7 @@ const login = async (payload) => {
         const { email, password } = payload;
 
         logger('debug', `Login request received for email: ${email}`);
-        const user = await userRepo.findOne({ email });
+        const user = await userRepo.findOne({ where: { email } });
 
         if (!user) {
             logger('error', `Email ${email} not registered.`);
@@ -102,7 +103,7 @@ const verify = async (payload) => {
         const { email, expires } = payload;
         logger('debug', `Verifying user with email: ${email}`);
 
-        const user = await userRepo.findOne({ email });
+        const user = await userRepo.findOne({ where: { email } });
         if (!user) {
             logger('error', 'User not found for verification.');
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
@@ -159,7 +160,7 @@ const forget = async (payload) => {
         const { email } = payload;
         logger('debug', `Initiating forgot password for email: ${email}`);
 
-        const user = await userRepo.findOne({ email });
+        const user = await userRepo.findOne({ where: { email } });
         if (!user) {
             logger('error', 'User not found with the provided email.');
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
@@ -192,7 +193,7 @@ const reset = async (payload) => {
         const { email, newPassword, expires } = payload;
         logger('debug', `Initiating password reset for email: ${email}`);
 
-        const user = await userRepo.findOne({ email });
+        const user = await userRepo.findOne({ where: { email } });
         if (!user) {
             logger('error', 'User not found for password reset.');
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid request');
@@ -231,7 +232,7 @@ const invite = async (payload) => {
     try {
         const { email } = payload;
 
-        const user = await userRepo.findOne({ email });
+        const user = await userRepo.findOne({ where: { email } });
         if (user) {
             logger('error', 'Email already registered', { email });
             throw CustomError(STATUS_CODE.CONFLICT, 'Email already registered');
@@ -332,17 +333,28 @@ const removeInvite = async (id) => {
 
 const getUser = async (user) => {
     try {
-        const { id, firstName, lastName, status, role, phoneNumber } = user;
-        return {
-            id,
-            firstName,
-            lastName,
-            status,
-            phoneNumber,
-            role
-        };
+        const { id } = user;
+        return await userRepo.findOne({
+            where: { id },
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role']
+        });
     } catch (error) {
         logger('error', 'Error while getting user details', { id: user.id, error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const update = async (id, payload) => {
+    try {
+        const options = { where: { id } };
+        const updateData = await userRepo.update(options, payload);
+        logger('debug', `${id} User updated successfully with status ${updateData[0]}`);
+        return await userRepo.findOne({
+            where: { id },
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role']
+        });
+    } catch (error) {
+        logger('error', `Error while updating user details ${id} ${error}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -356,5 +368,6 @@ export default {
     invite,
     listInvites,
     removeInvite,
-    getUser
+    getUser,
+    update
 };

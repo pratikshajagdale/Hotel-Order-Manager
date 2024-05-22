@@ -16,7 +16,7 @@ const save = async (payload) => {
 const findOne = async (payload) => {
     try {
         logger('debug', 'Fetching user data in the database');
-        return await db.users.findOne({ where: payload });
+        return await db.users.findOne(payload);
     } catch (error) {
         const err = error?.errors[0]?.message;
         logger('error', `Error occurred while finding user data: ${err || error.message}`);
@@ -24,4 +24,26 @@ const findOne = async (payload) => {
     }
 };
 
-export default { save, findOne };
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing user data in the database');
+        return await db.users.destroy(options);
+    } catch (error) {
+        const err = error?.errors[0]?.message;
+        logger('error', `Error occurred while removing user data: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+const update = async (options, data) => {
+    try {
+        logger('debug', 'Updating user data with options:', { options }, 'and data:', { data });
+        return await db.users.update(data, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error while updating user : ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, findOne, remove, update };

@@ -1,9 +1,10 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import hotelRepo from '../repositories/hotel.repository.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
-import { CustomError, STATUS_CODE, TABLES } from '../utils/common.js';
+import { CustomError, STATUS_CODE } from '../utils/common.js';
 
 const create = async (payload, ownerId) => {
     try {
@@ -107,13 +108,55 @@ const list = async (userId) => {
     try {
         const options = {
             where: { userId },
-            include: [TABLES.HOTEL]
+            include: [
+                {
+                    model: db.hotel,
+                    include: [
+                        {
+                            model: db.hotelUserRelation,
+                            where: { userId: { [Op.ne]: userId } },
+                            include: [
+                                {
+                                    model: db.users
+                                }
+                            ],
+                            separate: true
+                        }
+                    ]
+                }
+            ]
         };
         logger('debug', 'Fetching hotels for user', { options });
         const hotels = await hotelUserRelationRepo.find(options);
 
-        const rows = hotels.rows.map((item) => item.hotel);
-        return { count: hotels.count, rows };
+        logger('info', `Hotels of owner ${JSON.stringify(hotels)}`);
+        const rows = hotels.rows.reduce((cur, next) => {
+            const { hotel } = next;
+            const obj = {
+                id: hotel.id,
+                name: hotel.name,
+                openTime: hotel.openTime,
+                closeTime: hotel.closeTime,
+                address: hotel.address,
+                careNumber: hotel.careNumber,
+                rating: hotel.rating,
+                createdAt: hotel.createdAt,
+                managers: {}
+            };
+
+            if (hotel.hotelUserRelations && hotel.hotelUserRelations.length) {
+                const managers = hotel.hotelUserRelations.map((item) => ({
+                    id: item.user.id,
+                    name: `${item.user.firstName} ${item.user.lastName}`
+                }));
+                obj.managers = managers;
+            }
+            cur.push(obj);
+            return cur;
+        }, []);
+
+        const data = { count: hotels.count, rows };
+        return data;
     } catch (error) {
         logger('error', 'Error while listing hotels', { error });
         throw CustomError(error.code, error.message);
